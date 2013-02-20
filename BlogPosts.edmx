@@ -1,0 +1,1013 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="kenticofreeModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="kenticofreeModelStoreContainer">
+          <EntitySet Name="Blog_Comment" EntityType="kenticofreeModel.Store.Blog_Comment" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_Attachment" EntityType="kenticofreeModel.Store.CMS_Attachment" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_Document" EntityType="kenticofreeModel.Store.CMS_Document" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_DocumentAlias" EntityType="kenticofreeModel.Store.CMS_DocumentAlias" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_DocumentCategory" EntityType="kenticofreeModel.Store.CMS_DocumentCategory" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_DocumentTag" EntityType="kenticofreeModel.Store.CMS_DocumentTag" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_Tag" EntityType="kenticofreeModel.Store.CMS_Tag" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_TagGroup" EntityType="kenticofreeModel.Store.CMS_TagGroup" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CONTENT_Blog" EntityType="kenticofreeModel.Store.CONTENT_Blog" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CONTENT_BlogMonth" EntityType="kenticofreeModel.Store.CONTENT_BlogMonth" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CONTENT_BlogPost" EntityType="kenticofreeModel.Store.CONTENT_BlogPost" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_Attachment" EntitySet="CMS_Attachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
+            <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentCategory_DocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_CMS_DocumentCategory_DocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_DocumentCategory" EntitySet="CMS_DocumentCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentTag_DocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_CMS_DocumentTag_DocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_DocumentTag" EntitySet="CMS_DocumentTag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentTag_TagID_CMS_Tag" Association="kenticofreeModel.Store.FK_CMS_DocumentTag_TagID_CMS_Tag">
+            <End Role="CMS_Tag" EntitySet="CMS_Tag" />
+            <End Role="CMS_DocumentTag" EntitySet="CMS_DocumentTag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tag_TagGroupID_CMS_TagGroup" Association="kenticofreeModel.Store.FK_CMS_Tag_TagGroupID_CMS_TagGroup">
+            <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
+            <End Role="CMS_Tag" EntitySet="CMS_Tag" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Blog_Comment">
+          <Key>
+            <PropertyRef Name="CommentID" />
+          </Key>
+          <Property Name="CommentID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CommentUserName" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="CommentUserID" Type="int" />
+          <Property Name="CommentUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="CommentText" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CommentApprovedByUserID" Type="int" />
+          <Property Name="CommentPostDocumentID" Type="int" Nullable="false" />
+          <Property Name="CommentDate" Type="datetime" Nullable="false" />
+          <Property Name="CommentIsSpam" Type="bit" />
+          <Property Name="CommentApproved" Type="bit" />
+          <Property Name="CommentIsTrackBack" Type="bit" />
+          <Property Name="CommentEmail" Type="nvarchar" MaxLength="250" />
+          <Property Name="CommentInfo" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CMS_Attachment">
+          <Key>
+            <PropertyRef Name="AttachmentID" />
+          </Key>
+          <Property Name="AttachmentID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentName" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="AttachmentExtension" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="AttachmentSize" Type="int" Nullable="false" />
+          <Property Name="AttachmentMimeType" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="AttachmentBinary" Type="varbinary(max)" />
+          <Property Name="AttachmentImageWidth" Type="int" />
+          <Property Name="AttachmentImageHeight" Type="int" />
+          <Property Name="AttachmentDocumentID" Type="int" />
+          <Property Name="AttachmentGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AttachmentLastHistoryID" Type="int" />
+          <Property Name="AttachmentSiteID" Type="int" />
+          <Property Name="AttachmentLastModified" Type="datetime" Nullable="false" />
+          <Property Name="AttachmentIsUnsorted" Type="bit" />
+          <Property Name="AttachmentOrder" Type="int" />
+          <Property Name="AttachmentGroupGUID" Type="uniqueidentifier" />
+          <Property Name="AttachmentFormGUID" Type="uniqueidentifier" />
+          <Property Name="AttachmentHash" Type="nvarchar" MaxLength="32" />
+          <Property Name="AttachmentTitle" Type="nvarchar" MaxLength="250" />
+          <Property Name="AttachmentDescription" Type="nvarchar(max)" />
+          <Property Name="AttachmentCustomData" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CMS_Document">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+          </Key>
+          <Property Name="DocumentID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="DocumentNamePath" Type="nvarchar" MaxLength="1500" />
+          <Property Name="DocumentModifiedWhen" Type="datetime" />
+          <Property Name="DocumentModifiedByUserID" Type="int" />
+          <Property Name="DocumentForeignKeyValue" Type="int" />
+          <Property Name="DocumentCreatedByUserID" Type="int" />
+          <Property Name="DocumentCreatedWhen" Type="datetime" />
+          <Property Name="DocumentCheckedOutByUserID" Type="int" />
+          <Property Name="DocumentCheckedOutWhen" Type="datetime" />
+          <Property Name="DocumentCheckedOutVersionHistoryID" Type="int" />
+          <Property Name="DocumentPublishedVersionHistoryID" Type="int" />
+          <Property Name="DocumentWorkflowStepID" Type="int" />
+          <Property Name="DocumentPublishFrom" Type="datetime" />
+          <Property Name="DocumentPublishTo" Type="datetime" />
+          <Property Name="DocumentUrlPath" Type="nvarchar" MaxLength="450" />
+          <Property Name="DocumentCulture" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="DocumentNodeID" Type="int" Nullable="false" />
+          <Property Name="DocumentPageTitle" Type="nvarchar(max)" />
+          <Property Name="DocumentPageKeyWords" Type="nvarchar(max)" />
+          <Property Name="DocumentPageDescription" Type="nvarchar(max)" />
+          <Property Name="DocumentShowInSiteMap" Type="bit" Nullable="false" />
+          <Property Name="DocumentMenuItemHideInNavigation" Type="bit" Nullable="false" />
+          <Property Name="DocumentMenuCaption" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuStyle" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentMenuItemImage" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemLeftImage" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemRightImage" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentPageTemplateID" Type="int" />
+          <Property Name="DocumentMenuJavascript" Type="nvarchar" MaxLength="450" />
+          <Property Name="DocumentMenuRedirectUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="DocumentUseNamePathForUrlPath" Type="bit" />
+          <Property Name="DocumentStylesheetID" Type="int" />
+          <Property Name="DocumentContent" Type="nvarchar(max)" />
+          <Property Name="DocumentMenuClass" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentMenuStyleOver" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuClassOver" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentMenuItemImageOver" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemLeftImageOver" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemRightImageOver" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuStyleHighlighted" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuClassHighlighted" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentMenuItemImageHighlighted" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemLeftImageHighlighted" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemRightImageHighlighted" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentMenuItemInactive" Type="bit" />
+          <Property Name="DocumentCustomData" Type="nvarchar(max)" />
+          <Property Name="DocumentExtensions" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentCampaign" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentTags" Type="nvarchar(max)" />
+          <Property Name="DocumentTagGroupID" Type="int" />
+          <Property Name="DocumentWildcardRule" Type="nvarchar" MaxLength="440" />
+          <Property Name="DocumentWebParts" Type="nvarchar(max)" />
+          <Property Name="DocumentRatingValue" Type="float" />
+          <Property Name="DocumentRatings" Type="int" />
+          <Property Name="DocumentPriority" Type="int" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentLastPublished" Type="datetime" />
+          <Property Name="DocumentUseCustomExtensions" Type="bit" />
+          <Property Name="DocumentGroupWebParts" Type="nvarchar(max)" />
+          <Property Name="DocumentCheckedOutAutomatically" Type="bit" />
+          <Property Name="DocumentTrackConversionName" Type="nvarchar" MaxLength="200" />
+          <Property Name="DocumentConversionValue" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentSearchExcluded" Type="bit" />
+          <Property Name="DocumentLastVersionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentLastVersionNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentIsArchived" Type="bit" />
+          <Property Name="DocumentLastVersionType" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentLastVersionMenuRedirectUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="DocumentHash" Type="nvarchar" MaxLength="32" />
+          <Property Name="DocumentLogVisitActivity" Type="bit" />
+          <Property Name="DocumentGUID" Type="uniqueidentifier" />
+          <Property Name="DocumentWorkflowCycleGUID" Type="uniqueidentifier" />
+          <Property Name="DocumentSitemapSettings" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentIsWaitingForTranslation" Type="bit" />
+          <Property Name="DocumentSKUName" Type="nvarchar" MaxLength="440" />
+          <Property Name="DocumentSKUDescription" Type="nvarchar(max)" />
+          <Property Name="DocumentSKUShortDescription" Type="nvarchar(max)" />
+          <Property Name="DocumentWorkflowActionStatus" Type="nvarchar" MaxLength="450" />
+        </EntityType>
+        <EntityType Name="CMS_DocumentAlias">
+          <Key>
+            <PropertyRef Name="AliasID" />
+          </Key>
+          <Property Name="AliasID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="AliasNodeID" Type="int" Nullable="false" />
+          <Property Name="AliasCulture" Type="nvarchar" MaxLength="20" />
+          <Property Name="AliasURLPath" Type="nvarchar" MaxLength="450" />
+          <Property Name="AliasExtensions" Type="nvarchar" MaxLength="100" />
+          <Property Name="AliasCampaign" Type="nvarchar" MaxLength="100" />
+          <Property Name="AliasWildcardRule" Type="nvarchar" MaxLength="440" />
+          <Property Name="AliasPriority" Type="int" />
+          <Property Name="AliasGUID" Type="uniqueidentifier" />
+          <Property Name="AliasLastModified" Type="datetime" Nullable="false" />
+          <Property Name="AliasSiteID" Type="int" Nullable="false" />
+          <Property Name="AliasActionMode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CMS_DocumentCategory">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="DocumentID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CMS_DocumentTag">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+            <PropertyRef Name="TagID" />
+          </Key>
+          <Property Name="DocumentID" Type="int" Nullable="false" />
+          <Property Name="TagID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CMS_Tag">
+          <Key>
+            <PropertyRef Name="TagID" />
+          </Key>
+          <Property Name="TagID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TagName" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="TagCount" Type="int" Nullable="false" />
+          <Property Name="TagGroupID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CMS_TagGroup">
+          <Key>
+            <PropertyRef Name="TagGroupID" />
+          </Key>
+          <Property Name="TagGroupID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TagGroupDisplayName" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="TagGroupName" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="TagGroupDescription" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TagGroupSiteID" Type="int" Nullable="false" />
+          <Property Name="TagGroupIsAdHoc" Type="bit" Nullable="false" />
+          <Property Name="TagGroupLastModified" Type="datetime" Nullable="false" />
+          <Property Name="TagGroupGUID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CONTENT_Blog">
+          <Key>
+            <PropertyRef Name="BlogID" />
+          </Key>
+          <Property Name="BlogID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="BlogName" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="BlogDescription" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="BlogSideColumnText" Type="nvarchar(max)" />
+          <Property Name="BlogTeaser" Type="uniqueidentifier" />
+          <Property Name="BlogOpenCommentsFor" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="BlogSendCommentsToEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="BlogAllowAnonymousComments" Type="bit" Nullable="false" />
+          <Property Name="BlogUseCAPTCHAForComments" Type="bit" Nullable="false" />
+          <Property Name="BlogRequireEmails" Type="bit" />
+          <Property Name="BlogUnsubscriptionUrl" Type="nvarchar" MaxLength="250" />
+          <Property Name="BlogEnableSubscriptions" Type="bit" />
+          <Property Name="BlogModerateComments" Type="bit" Nullable="false" />
+          <Property Name="BlogModerators" Type="nvarchar" MaxLength="450" />
+          <Property Name="BlogEnableTrackbacks" Type="bit" />
+          <Property Name="BlogEnableOptIn" Type="int" />
+          <Property Name="BlogOptInApprovalURL" Type="nvarchar" MaxLength="450" />
+          <Property Name="BlogSendOptInConfirmation" Type="int" />
+        </EntityType>
+        <EntityType Name="CONTENT_BlogMonth">
+          <Key>
+            <PropertyRef Name="BlogMonthID" />
+          </Key>
+          <Property Name="BlogMonthID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="BlogMonthName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="BlogMonthStartingDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CONTENT_BlogPost">
+          <Key>
+            <PropertyRef Name="BlogPostID" />
+          </Key>
+          <Property Name="BlogPostID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="BlogPostTitle" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="BlogPostDate" Type="datetime" Nullable="false" />
+          <Property Name="BlogPostSummary" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="BlogPostBody" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="BlogPostTeaser" Type="uniqueidentifier" />
+          <Property Name="BlogPostAllowComments" Type="bit" Nullable="false" />
+          <Property Name="BlogPostPingedUrls" Type="nvarchar(max)" />
+          <Property Name="BlogPostNotPingedUrls" Type="nvarchar(max)" />
+          <Property Name="FacebookAutoPost" Type="nvarchar(max)" />
+          <Property Name="TwitterAutoPost" Type="nvarchar(max)" />
+          <Property Name="BlogLogActivity" Type="bit" />
+        </EntityType>
+        <Association Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="1" />
+          <End Role="Blog_Comment" Type="kenticofreeModel.Store.Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentPostDocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="0..1" />
+          <End Role="CMS_Attachment" Type="kenticofreeModel.Store.CMS_Attachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="CMS_Attachment">
+              <PropertyRef Name="AttachmentDocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
+          <End Role="CMS_TagGroup" Type="kenticofreeModel.Store.CMS_TagGroup" Multiplicity="0..1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_TagGroup">
+              <PropertyRef Name="TagGroupID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentTagGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentCategory_DocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="1" />
+          <End Role="CMS_DocumentCategory" Type="kenticofreeModel.Store.CMS_DocumentCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentCategory">
+              <PropertyRef Name="DocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentTag_DocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="1" />
+          <End Role="CMS_DocumentTag" Type="kenticofreeModel.Store.CMS_DocumentTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentTag">
+              <PropertyRef Name="DocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentTag_TagID_CMS_Tag">
+          <End Role="CMS_Tag" Type="kenticofreeModel.Store.CMS_Tag" Multiplicity="1" />
+          <End Role="CMS_DocumentTag" Type="kenticofreeModel.Store.CMS_DocumentTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tag">
+              <PropertyRef Name="TagID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentTag">
+              <PropertyRef Name="TagID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tag_TagGroupID_CMS_TagGroup">
+          <End Role="CMS_TagGroup" Type="kenticofreeModel.Store.CMS_TagGroup" Multiplicity="1" />
+          <End Role="CMS_Tag" Type="kenticofreeModel.Store.CMS_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_TagGroup">
+              <PropertyRef Name="TagGroupID" />
+            </Principal>
+            <Dependent Role="CMS_Tag">
+              <PropertyRef Name="TagGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="kenticofreeModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="kenticofreeEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Blog_Comment" EntityType="kenticofreeModel.Blog_Comment" />
+          <EntitySet Name="CMS_Attachment" EntityType="kenticofreeModel.CMS_Attachment" />
+          <EntitySet Name="CMS_Document" EntityType="kenticofreeModel.CMS_Document" />
+          <EntitySet Name="CMS_DocumentAlias" EntityType="kenticofreeModel.CMS_DocumentAlias" />
+          <EntitySet Name="CMS_DocumentCategory" EntityType="kenticofreeModel.CMS_DocumentCategory" />
+          <EntitySet Name="CMS_Tag" EntityType="kenticofreeModel.CMS_Tag" />
+          <EntitySet Name="CMS_TagGroup" EntityType="kenticofreeModel.CMS_TagGroup" />
+          <EntitySet Name="CONTENT_BlogPost" EntityType="kenticofreeModel.CONTENT_BlogPost" />
+          <AssociationSet Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document" Association="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" Association="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_Attachment" EntitySet="CMS_Attachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" Association="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
+            <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentCategory_DocumentID_CMS_Document" Association="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_DocumentCategory" EntitySet="CMS_DocumentCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tag_TagGroupID_CMS_TagGroup" Association="kenticofreeModel.FK_CMS_Tag_TagGroupID_CMS_TagGroup">
+            <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
+            <End Role="CMS_Tag" EntitySet="CMS_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="CMS_DocumentTag" Association="kenticofreeModel.CMS_DocumentTag">
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="CMS_Tag" EntitySet="CMS_Tag" />
+          </AssociationSet>
+          <EntitySet Name="CONTENT_Blog" EntityType="kenticofreeModel.CONTENT_Blog" />
+          <EntitySet Name="CONTENT_BlogMonth" EntityType="kenticofreeModel.CONTENT_BlogMonth" />
+        </EntityContainer>
+        <EntityType Name="Blog_Comment">
+          <Key>
+            <PropertyRef Name="CommentID" />
+          </Key>
+          <Property Name="CommentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommentUserName" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="CommentUserID" Type="Int32" />
+          <Property Name="CommentUrl" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="CommentText" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CommentApprovedByUserID" Type="Int32" />
+          <Property Name="CommentPostDocumentID" Type="Int32" Nullable="false" />
+          <Property Name="CommentDate" Type="DateTime" Nullable="false" />
+          <Property Name="CommentIsSpam" Type="Boolean" />
+          <Property Name="CommentApproved" Type="Boolean" />
+          <Property Name="CommentIsTrackBack" Type="Boolean" />
+          <Property Name="CommentEmail" Type="String" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="CommentInfo" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" FromRole="Blog_Comment" ToRole="CMS_Document" />
+        </EntityType>
+        <EntityType Name="CMS_Attachment">
+          <Key>
+            <PropertyRef Name="AttachmentID" />
+          </Key>
+          <Property Name="AttachmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentName" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentExtension" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentSize" Type="Int32" Nullable="false" />
+          <Property Name="AttachmentMimeType" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentBinary" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="AttachmentImageWidth" Type="Int32" />
+          <Property Name="AttachmentImageHeight" Type="Int32" />
+          <Property Name="AttachmentDocumentID" Type="Int32" />
+          <Property Name="AttachmentGUID" Type="Guid" Nullable="false" />
+          <Property Name="AttachmentLastHistoryID" Type="Int32" />
+          <Property Name="AttachmentSiteID" Type="Int32" />
+          <Property Name="AttachmentLastModified" Type="DateTime" Nullable="false" />
+          <Property Name="AttachmentIsUnsorted" Type="Boolean" />
+          <Property Name="AttachmentOrder" Type="Int32" />
+          <Property Name="AttachmentGroupGUID" Type="Guid" />
+          <Property Name="AttachmentFormGUID" Type="Guid" />
+          <Property Name="AttachmentHash" Type="String" MaxLength="32" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentTitle" Type="String" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentDescription" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="AttachmentCustomData" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" FromRole="CMS_Attachment" ToRole="CMS_Document" />
+        </EntityType>
+        <EntityType Name="CMS_Document">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+          </Key>
+          <Property Name="DocumentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentName" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentNamePath" Type="String" MaxLength="1500" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentModifiedWhen" Type="DateTime" />
+          <Property Name="DocumentModifiedByUserID" Type="Int32" />
+          <Property Name="DocumentForeignKeyValue" Type="Int32" />
+          <Property Name="DocumentCreatedByUserID" Type="Int32" />
+          <Property Name="DocumentCreatedWhen" Type="DateTime" />
+          <Property Name="DocumentCheckedOutByUserID" Type="Int32" />
+          <Property Name="DocumentCheckedOutWhen" Type="DateTime" />
+          <Property Name="DocumentCheckedOutVersionHistoryID" Type="Int32" />
+          <Property Name="DocumentPublishedVersionHistoryID" Type="Int32" />
+          <Property Name="DocumentWorkflowStepID" Type="Int32" />
+          <Property Name="DocumentPublishFrom" Type="DateTime" />
+          <Property Name="DocumentPublishTo" Type="DateTime" />
+          <Property Name="DocumentUrlPath" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentCulture" Type="String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentNodeID" Type="Int32" Nullable="false" />
+          <Property Name="DocumentPageTitle" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentPageKeyWords" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentPageDescription" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentShowInSiteMap" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentMenuItemHideInNavigation" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentMenuCaption" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuStyle" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemImage" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemLeftImage" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemRightImage" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentPageTemplateID" Type="Int32" />
+          <Property Name="DocumentMenuJavascript" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuRedirectUrl" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentUseNamePathForUrlPath" Type="Boolean" />
+          <Property Name="DocumentStylesheetID" Type="Int32" />
+          <Property Name="DocumentContent" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuClass" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuStyleOver" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuClassOver" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemImageOver" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemLeftImageOver" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemRightImageOver" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuStyleHighlighted" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuClassHighlighted" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemImageHighlighted" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemLeftImageHighlighted" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemRightImageHighlighted" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentMenuItemInactive" Type="Boolean" />
+          <Property Name="DocumentCustomData" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentExtensions" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentCampaign" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentTags" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentTagGroupID" Type="Int32" />
+          <Property Name="DocumentWildcardRule" Type="String" MaxLength="440" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentWebParts" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentRatingValue" Type="Double" />
+          <Property Name="DocumentRatings" Type="Int32" />
+          <Property Name="DocumentPriority" Type="Int32" />
+          <Property Name="DocumentType" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentLastPublished" Type="DateTime" />
+          <Property Name="DocumentUseCustomExtensions" Type="Boolean" />
+          <Property Name="DocumentGroupWebParts" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentCheckedOutAutomatically" Type="Boolean" />
+          <Property Name="DocumentTrackConversionName" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentConversionValue" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentSearchExcluded" Type="Boolean" />
+          <Property Name="DocumentLastVersionName" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentLastVersionNumber" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentIsArchived" Type="Boolean" />
+          <Property Name="DocumentLastVersionType" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentLastVersionMenuRedirectUrl" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentHash" Type="String" MaxLength="32" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentLogVisitActivity" Type="Boolean" />
+          <Property Name="DocumentGUID" Type="Guid" />
+          <Property Name="DocumentWorkflowCycleGUID" Type="Guid" />
+          <Property Name="DocumentSitemapSettings" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentIsWaitingForTranslation" Type="Boolean" />
+          <Property Name="DocumentSKUName" Type="String" MaxLength="440" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentSKUDescription" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentSKUShortDescription" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="DocumentWorkflowActionStatus" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Blog_Comment" Relationship="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" FromRole="CMS_Document" ToRole="Blog_Comment" />
+          <NavigationProperty Name="CMS_Attachment" Relationship="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" FromRole="CMS_Document" ToRole="CMS_Attachment" />
+          <NavigationProperty Name="CMS_TagGroup" Relationship="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" FromRole="CMS_Document" ToRole="CMS_TagGroup" />
+          <NavigationProperty Name="CMS_DocumentCategory" Relationship="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document" FromRole="CMS_Document" ToRole="CMS_DocumentCategory" />
+          <NavigationProperty Name="CMS_Tag" Relationship="kenticofreeModel.CMS_DocumentTag" FromRole="CMS_Document" ToRole="CMS_Tag" />
+        </EntityType>
+        <EntityType Name="CMS_DocumentAlias">
+          <Key>
+            <PropertyRef Name="AliasID" />
+          </Key>
+          <Property Name="AliasID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AliasNodeID" Type="Int32" Nullable="false" />
+          <Property Name="AliasCulture" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="AliasURLPath" Type="String" MaxLength="450" Unicode="true" FixedLength="false" />
+          <Property Name="AliasExtensions" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="AliasCampaign" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="AliasWildcardRule" Type="String" MaxLength="440" Unicode="true" FixedLength="false" />
+          <Property Name="AliasPriority" Type="Int32" />
+          <Property Name="AliasGUID" Type="Guid" />
+          <Property Name="AliasLastModified" Type="DateTime" Nullable="false" />
+          <Property Name="AliasSiteID" Type="Int32" Nullable="false" />
+          <Property Name="AliasActionMode" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="CMS_DocumentCategory">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="DocumentID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document" FromRole="CMS_DocumentCategory" ToRole="CMS_Document" />
+        </EntityType>
+        <EntityType Name="CMS_Tag">
+          <Key>
+            <PropertyRef Name="TagID" />
+          </Key>
+          <Property Name="TagID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TagName" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="TagCount" Type="Int32" Nullable="false" />
+          <Property Name="TagGroupID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CMS_TagGroup" Relationship="kenticofreeModel.FK_CMS_Tag_TagGroupID_CMS_TagGroup" FromRole="CMS_Tag" ToRole="CMS_TagGroup" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.CMS_DocumentTag" FromRole="CMS_Tag" ToRole="CMS_Document" />
+        </EntityType>
+        <EntityType Name="CMS_TagGroup">
+          <Key>
+            <PropertyRef Name="TagGroupID" />
+          </Key>
+          <Property Name="TagGroupID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TagGroupDisplayName" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="TagGroupName" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
+          <Property Name="TagGroupDescription" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="TagGroupSiteID" Type="Int32" Nullable="false" />
+          <Property Name="TagGroupIsAdHoc" Type="Boolean" Nullable="false" />
+          <Property Name="TagGroupLastModified" Type="DateTime" Nullable="false" />
+          <Property Name="TagGroupGUID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" FromRole="CMS_TagGroup" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_Tag" Relationship="kenticofreeModel.FK_CMS_Tag_TagGroupID_CMS_TagGroup" FromRole="CMS_TagGroup" ToRole="CMS_Tag" />
+        </EntityType>
+        <EntityType Name="CONTENT_BlogPost">
+          <Key>
+            <PropertyRef Name="BlogPostID" />
+          </Key>
+          <Property Name="BlogPostID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BlogPostTitle" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="BlogPostDate" Type="DateTime" Nullable="false" />
+          <Property Name="BlogPostSummary" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="BlogPostBody" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="BlogPostTeaser" Type="Guid" />
+          <Property Name="BlogPostAllowComments" Type="Boolean" Nullable="false" />
+          <Property Name="BlogPostPingedUrls" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="BlogPostNotPingedUrls" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="FacebookAutoPost" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="TwitterAutoPost" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="BlogLogActivity" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.CMS_Document" Multiplicity="1" />
+          <End Role="Blog_Comment" Type="kenticofreeModel.Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentPostDocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.CMS_Document" Multiplicity="0..1" />
+          <End Role="CMS_Attachment" Type="kenticofreeModel.CMS_Attachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="CMS_Attachment">
+              <PropertyRef Name="AttachmentDocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
+          <End Role="CMS_TagGroup" Type="kenticofreeModel.CMS_TagGroup" Multiplicity="0..1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_TagGroup">
+              <PropertyRef Name="TagGroupID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentTagGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentCategory_DocumentID_CMS_Document">
+          <End Role="CMS_Document" Type="kenticofreeModel.CMS_Document" Multiplicity="1" />
+          <End Role="CMS_DocumentCategory" Type="kenticofreeModel.CMS_DocumentCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Document">
+              <PropertyRef Name="DocumentID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentCategory">
+              <PropertyRef Name="DocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tag_TagGroupID_CMS_TagGroup">
+          <End Role="CMS_TagGroup" Type="kenticofreeModel.CMS_TagGroup" Multiplicity="1" />
+          <End Role="CMS_Tag" Type="kenticofreeModel.CMS_Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_TagGroup">
+              <PropertyRef Name="TagGroupID" />
+            </Principal>
+            <Dependent Role="CMS_Tag">
+              <PropertyRef Name="TagGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CMS_DocumentTag">
+          <End Role="CMS_Document" Type="kenticofreeModel.CMS_Document" Multiplicity="*" />
+          <End Role="CMS_Tag" Type="kenticofreeModel.CMS_Tag" Multiplicity="*" />
+        </Association>
+        <EntityType Name="CONTENT_Blog">
+          <Key>
+            <PropertyRef Name="BlogID" />
+          </Key>
+          <Property Type="Int32" Name="BlogID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="BlogName" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="BlogDescription" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="BlogSideColumnText" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Guid" Name="BlogTeaser" />
+          <Property Type="String" Name="BlogOpenCommentsFor" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="BlogSendCommentsToEmail" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="BlogAllowAnonymousComments" Nullable="false" />
+          <Property Type="Boolean" Name="BlogUseCAPTCHAForComments" Nullable="false" />
+          <Property Type="Boolean" Name="BlogRequireEmails" />
+          <Property Type="String" Name="BlogUnsubscriptionUrl" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="BlogEnableSubscriptions" />
+          <Property Type="Boolean" Name="BlogModerateComments" Nullable="false" />
+          <Property Type="String" Name="BlogModerators" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="BlogEnableTrackbacks" />
+          <Property Type="Int32" Name="BlogEnableOptIn" />
+          <Property Type="String" Name="BlogOptInApprovalURL" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="BlogSendOptInConfirmation" />
+        </EntityType>
+        <EntityType Name="CONTENT_BlogMonth">
+          <Key>
+            <PropertyRef Name="BlogMonthID" />
+          </Key>
+          <Property Type="Int32" Name="BlogMonthID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="BlogMonthName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="BlogMonthStartingDate" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="kenticofreeModelStoreContainer" CdmEntityContainer="kenticofreeEntities">
+          <EntitySetMapping Name="Blog_Comment">
+            <EntityTypeMapping TypeName="kenticofreeModel.Blog_Comment">
+              <MappingFragment StoreEntitySet="Blog_Comment">
+                <ScalarProperty Name="CommentID" ColumnName="CommentID" />
+                <ScalarProperty Name="CommentUserName" ColumnName="CommentUserName" />
+                <ScalarProperty Name="CommentUserID" ColumnName="CommentUserID" />
+                <ScalarProperty Name="CommentUrl" ColumnName="CommentUrl" />
+                <ScalarProperty Name="CommentText" ColumnName="CommentText" />
+                <ScalarProperty Name="CommentApprovedByUserID" ColumnName="CommentApprovedByUserID" />
+                <ScalarProperty Name="CommentPostDocumentID" ColumnName="CommentPostDocumentID" />
+                <ScalarProperty Name="CommentDate" ColumnName="CommentDate" />
+                <ScalarProperty Name="CommentIsSpam" ColumnName="CommentIsSpam" />
+                <ScalarProperty Name="CommentApproved" ColumnName="CommentApproved" />
+                <ScalarProperty Name="CommentIsTrackBack" ColumnName="CommentIsTrackBack" />
+                <ScalarProperty Name="CommentEmail" ColumnName="CommentEmail" />
+                <ScalarProperty Name="CommentInfo" ColumnName="CommentInfo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_Attachment">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_Attachment">
+              <MappingFragment StoreEntitySet="CMS_Attachment">
+                <ScalarProperty Name="AttachmentID" ColumnName="AttachmentID" />
+                <ScalarProperty Name="AttachmentName" ColumnName="AttachmentName" />
+                <ScalarProperty Name="AttachmentExtension" ColumnName="AttachmentExtension" />
+                <ScalarProperty Name="AttachmentSize" ColumnName="AttachmentSize" />
+                <ScalarProperty Name="AttachmentMimeType" ColumnName="AttachmentMimeType" />
+                <ScalarProperty Name="AttachmentBinary" ColumnName="AttachmentBinary" />
+                <ScalarProperty Name="AttachmentImageWidth" ColumnName="AttachmentImageWidth" />
+                <ScalarProperty Name="AttachmentImageHeight" ColumnName="AttachmentImageHeight" />
+                <ScalarProperty Name="AttachmentDocumentID" ColumnName="AttachmentDocumentID" />
+                <ScalarProperty Name="AttachmentGUID" ColumnName="AttachmentGUID" />
+                <ScalarProperty Name="AttachmentLastHistoryID" ColumnName="AttachmentLastHistoryID" />
+                <ScalarProperty Name="AttachmentSiteID" ColumnName="AttachmentSiteID" />
+                <ScalarProperty Name="AttachmentLastModified" ColumnName="AttachmentLastModified" />
+                <ScalarProperty Name="AttachmentIsUnsorted" ColumnName="AttachmentIsUnsorted" />
+                <ScalarProperty Name="AttachmentOrder" ColumnName="AttachmentOrder" />
+                <ScalarProperty Name="AttachmentGroupGUID" ColumnName="AttachmentGroupGUID" />
+                <ScalarProperty Name="AttachmentFormGUID" ColumnName="AttachmentFormGUID" />
+                <ScalarProperty Name="AttachmentHash" ColumnName="AttachmentHash" />
+                <ScalarProperty Name="AttachmentTitle" ColumnName="AttachmentTitle" />
+                <ScalarProperty Name="AttachmentDescription" ColumnName="AttachmentDescription" />
+                <ScalarProperty Name="AttachmentCustomData" ColumnName="AttachmentCustomData" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_Document">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_Document">
+              <MappingFragment StoreEntitySet="CMS_Document">
+                <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="DocumentNamePath" ColumnName="DocumentNamePath" />
+                <ScalarProperty Name="DocumentModifiedWhen" ColumnName="DocumentModifiedWhen" />
+                <ScalarProperty Name="DocumentModifiedByUserID" ColumnName="DocumentModifiedByUserID" />
+                <ScalarProperty Name="DocumentForeignKeyValue" ColumnName="DocumentForeignKeyValue" />
+                <ScalarProperty Name="DocumentCreatedByUserID" ColumnName="DocumentCreatedByUserID" />
+                <ScalarProperty Name="DocumentCreatedWhen" ColumnName="DocumentCreatedWhen" />
+                <ScalarProperty Name="DocumentCheckedOutByUserID" ColumnName="DocumentCheckedOutByUserID" />
+                <ScalarProperty Name="DocumentCheckedOutWhen" ColumnName="DocumentCheckedOutWhen" />
+                <ScalarProperty Name="DocumentCheckedOutVersionHistoryID" ColumnName="DocumentCheckedOutVersionHistoryID" />
+                <ScalarProperty Name="DocumentPublishedVersionHistoryID" ColumnName="DocumentPublishedVersionHistoryID" />
+                <ScalarProperty Name="DocumentWorkflowStepID" ColumnName="DocumentWorkflowStepID" />
+                <ScalarProperty Name="DocumentPublishFrom" ColumnName="DocumentPublishFrom" />
+                <ScalarProperty Name="DocumentPublishTo" ColumnName="DocumentPublishTo" />
+                <ScalarProperty Name="DocumentUrlPath" ColumnName="DocumentUrlPath" />
+                <ScalarProperty Name="DocumentCulture" ColumnName="DocumentCulture" />
+                <ScalarProperty Name="DocumentNodeID" ColumnName="DocumentNodeID" />
+                <ScalarProperty Name="DocumentPageTitle" ColumnName="DocumentPageTitle" />
+                <ScalarProperty Name="DocumentPageKeyWords" ColumnName="DocumentPageKeyWords" />
+                <ScalarProperty Name="DocumentPageDescription" ColumnName="DocumentPageDescription" />
+                <ScalarProperty Name="DocumentShowInSiteMap" ColumnName="DocumentShowInSiteMap" />
+                <ScalarProperty Name="DocumentMenuItemHideInNavigation" ColumnName="DocumentMenuItemHideInNavigation" />
+                <ScalarProperty Name="DocumentMenuCaption" ColumnName="DocumentMenuCaption" />
+                <ScalarProperty Name="DocumentMenuStyle" ColumnName="DocumentMenuStyle" />
+                <ScalarProperty Name="DocumentMenuItemImage" ColumnName="DocumentMenuItemImage" />
+                <ScalarProperty Name="DocumentMenuItemLeftImage" ColumnName="DocumentMenuItemLeftImage" />
+                <ScalarProperty Name="DocumentMenuItemRightImage" ColumnName="DocumentMenuItemRightImage" />
+                <ScalarProperty Name="DocumentPageTemplateID" ColumnName="DocumentPageTemplateID" />
+                <ScalarProperty Name="DocumentMenuJavascript" ColumnName="DocumentMenuJavascript" />
+                <ScalarProperty Name="DocumentMenuRedirectUrl" ColumnName="DocumentMenuRedirectUrl" />
+                <ScalarProperty Name="DocumentUseNamePathForUrlPath" ColumnName="DocumentUseNamePathForUrlPath" />
+                <ScalarProperty Name="DocumentStylesheetID" ColumnName="DocumentStylesheetID" />
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="DocumentMenuClass" ColumnName="DocumentMenuClass" />
+                <ScalarProperty Name="DocumentMenuStyleOver" ColumnName="DocumentMenuStyleOver" />
+                <ScalarProperty Name="DocumentMenuClassOver" ColumnName="DocumentMenuClassOver" />
+                <ScalarProperty Name="DocumentMenuItemImageOver" ColumnName="DocumentMenuItemImageOver" />
+                <ScalarProperty Name="DocumentMenuItemLeftImageOver" ColumnName="DocumentMenuItemLeftImageOver" />
+                <ScalarProperty Name="DocumentMenuItemRightImageOver" ColumnName="DocumentMenuItemRightImageOver" />
+                <ScalarProperty Name="DocumentMenuStyleHighlighted" ColumnName="DocumentMenuStyleHighlighted" />
+                <ScalarProperty Name="DocumentMenuClassHighlighted" ColumnName="DocumentMenuClassHighlighted" />
+                <ScalarProperty Name="DocumentMenuItemImageHighlighted" ColumnName="DocumentMenuItemImageHighlighted" />
+                <ScalarProperty Name="DocumentMenuItemLeftImageHighlighted" ColumnName="DocumentMenuItemLeftImageHighlighted" />
+                <ScalarProperty Name="DocumentMenuItemRightImageHighlighted" ColumnName="DocumentMenuItemRightImageHighlighted" />
+                <ScalarProperty Name="DocumentMenuItemInactive" ColumnName="DocumentMenuItemInactive" />
+                <ScalarProperty Name="DocumentCustomData" ColumnName="DocumentCustomData" />
+                <ScalarProperty Name="DocumentExtensions" ColumnName="DocumentExtensions" />
+                <ScalarProperty Name="DocumentCampaign" ColumnName="DocumentCampaign" />
+                <ScalarProperty Name="DocumentTags" ColumnName="DocumentTags" />
+                <ScalarProperty Name="DocumentTagGroupID" ColumnName="DocumentTagGroupID" />
+                <ScalarProperty Name="DocumentWildcardRule" ColumnName="DocumentWildcardRule" />
+                <ScalarProperty Name="DocumentWebParts" ColumnName="DocumentWebParts" />
+                <ScalarProperty Name="DocumentRatingValue" ColumnName="DocumentRatingValue" />
+                <ScalarProperty Name="DocumentRatings" ColumnName="DocumentRatings" />
+                <ScalarProperty Name="DocumentPriority" ColumnName="DocumentPriority" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="DocumentLastPublished" ColumnName="DocumentLastPublished" />
+                <ScalarProperty Name="DocumentUseCustomExtensions" ColumnName="DocumentUseCustomExtensions" />
+                <ScalarProperty Name="DocumentGroupWebParts" ColumnName="DocumentGroupWebParts" />
+                <ScalarProperty Name="DocumentCheckedOutAutomatically" ColumnName="DocumentCheckedOutAutomatically" />
+                <ScalarProperty Name="DocumentTrackConversionName" ColumnName="DocumentTrackConversionName" />
+                <ScalarProperty Name="DocumentConversionValue" ColumnName="DocumentConversionValue" />
+                <ScalarProperty Name="DocumentSearchExcluded" ColumnName="DocumentSearchExcluded" />
+                <ScalarProperty Name="DocumentLastVersionName" ColumnName="DocumentLastVersionName" />
+                <ScalarProperty Name="DocumentLastVersionNumber" ColumnName="DocumentLastVersionNumber" />
+                <ScalarProperty Name="DocumentIsArchived" ColumnName="DocumentIsArchived" />
+                <ScalarProperty Name="DocumentLastVersionType" ColumnName="DocumentLastVersionType" />
+                <ScalarProperty Name="DocumentLastVersionMenuRedirectUrl" ColumnName="DocumentLastVersionMenuRedirectUrl" />
+                <ScalarProperty Name="DocumentHash" ColumnName="DocumentHash" />
+                <ScalarProperty Name="DocumentLogVisitActivity" ColumnName="DocumentLogVisitActivity" />
+                <ScalarProperty Name="DocumentGUID" ColumnName="DocumentGUID" />
+                <ScalarProperty Name="DocumentWorkflowCycleGUID" ColumnName="DocumentWorkflowCycleGUID" />
+                <ScalarProperty Name="DocumentSitemapSettings" ColumnName="DocumentSitemapSettings" />
+                <ScalarProperty Name="DocumentIsWaitingForTranslation" ColumnName="DocumentIsWaitingForTranslation" />
+                <ScalarProperty Name="DocumentSKUName" ColumnName="DocumentSKUName" />
+                <ScalarProperty Name="DocumentSKUDescription" ColumnName="DocumentSKUDescription" />
+                <ScalarProperty Name="DocumentSKUShortDescription" ColumnName="DocumentSKUShortDescription" />
+                <ScalarProperty Name="DocumentWorkflowActionStatus" ColumnName="DocumentWorkflowActionStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_DocumentAlias">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_DocumentAlias">
+              <MappingFragment StoreEntitySet="CMS_DocumentAlias">
+                <ScalarProperty Name="AliasID" ColumnName="AliasID" />
+                <ScalarProperty Name="AliasNodeID" ColumnName="AliasNodeID" />
+                <ScalarProperty Name="AliasCulture" ColumnName="AliasCulture" />
+                <ScalarProperty Name="AliasURLPath" ColumnName="AliasURLPath" />
+                <ScalarProperty Name="AliasExtensions" ColumnName="AliasExtensions" />
+                <ScalarProperty Name="AliasCampaign" ColumnName="AliasCampaign" />
+                <ScalarProperty Name="AliasWildcardRule" ColumnName="AliasWildcardRule" />
+                <ScalarProperty Name="AliasPriority" ColumnName="AliasPriority" />
+                <ScalarProperty Name="AliasGUID" ColumnName="AliasGUID" />
+                <ScalarProperty Name="AliasLastModified" ColumnName="AliasLastModified" />
+                <ScalarProperty Name="AliasSiteID" ColumnName="AliasSiteID" />
+                <ScalarProperty Name="AliasActionMode" ColumnName="AliasActionMode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_DocumentCategory">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_DocumentCategory">
+              <MappingFragment StoreEntitySet="CMS_DocumentCategory">
+                <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_Tag">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_Tag">
+              <MappingFragment StoreEntitySet="CMS_Tag">
+                <ScalarProperty Name="TagID" ColumnName="TagID" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="TagCount" ColumnName="TagCount" />
+                <ScalarProperty Name="TagGroupID" ColumnName="TagGroupID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_TagGroup">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_TagGroup">
+              <MappingFragment StoreEntitySet="CMS_TagGroup">
+                <ScalarProperty Name="TagGroupID" ColumnName="TagGroupID" />
+                <ScalarProperty Name="TagGroupDisplayName" ColumnName="TagGroupDisplayName" />
+                <ScalarProperty Name="TagGroupName" ColumnName="TagGroupName" />
+                <ScalarProperty Name="TagGroupDescription" ColumnName="TagGroupDescription" />
+                <ScalarProperty Name="TagGroupSiteID" ColumnName="TagGroupSiteID" />
+                <ScalarProperty Name="TagGroupIsAdHoc" ColumnName="TagGroupIsAdHoc" />
+                <ScalarProperty Name="TagGroupLastModified" ColumnName="TagGroupLastModified" />
+                <ScalarProperty Name="TagGroupGUID" ColumnName="TagGroupGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CONTENT_BlogPost">
+            <EntityTypeMapping TypeName="kenticofreeModel.CONTENT_BlogPost">
+              <MappingFragment StoreEntitySet="CONTENT_BlogPost">
+                <ScalarProperty Name="BlogPostID" ColumnName="BlogPostID" />
+                <ScalarProperty Name="BlogPostTitle" ColumnName="BlogPostTitle" />
+                <ScalarProperty Name="BlogPostDate" ColumnName="BlogPostDate" />
+                <ScalarProperty Name="BlogPostSummary" ColumnName="BlogPostSummary" />
+                <ScalarProperty Name="BlogPostBody" ColumnName="BlogPostBody" />
+                <ScalarProperty Name="BlogPostTeaser" ColumnName="BlogPostTeaser" />
+                <ScalarProperty Name="BlogPostAllowComments" ColumnName="BlogPostAllowComments" />
+                <ScalarProperty Name="BlogPostPingedUrls" ColumnName="BlogPostPingedUrls" />
+                <ScalarProperty Name="BlogPostNotPingedUrls" ColumnName="BlogPostNotPingedUrls" />
+                <ScalarProperty Name="FacebookAutoPost" ColumnName="FacebookAutoPost" />
+                <ScalarProperty Name="TwitterAutoPost" ColumnName="TwitterAutoPost" />
+                <ScalarProperty Name="BlogLogActivity" ColumnName="BlogLogActivity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="CMS_DocumentTag" TypeName="kenticofreeModel.CMS_DocumentTag" StoreEntitySet="CMS_DocumentTag">
+            <EndProperty Name="CMS_Document">
+              <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+            </EndProperty>
+            <EndProperty Name="CMS_Tag">
+              <ScalarProperty Name="TagID" ColumnName="TagID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="CONTENT_Blog">
+            <EntityTypeMapping TypeName="kenticofreeModel.CONTENT_Blog">
+              <MappingFragment StoreEntitySet="CONTENT_Blog">
+                <ScalarProperty Name="BlogSendOptInConfirmation" ColumnName="BlogSendOptInConfirmation" />
+                <ScalarProperty Name="BlogOptInApprovalURL" ColumnName="BlogOptInApprovalURL" />
+                <ScalarProperty Name="BlogEnableOptIn" ColumnName="BlogEnableOptIn" />
+                <ScalarProperty Name="BlogEnableTrackbacks" ColumnName="BlogEnableTrackbacks" />
+                <ScalarProperty Name="BlogModerators" ColumnName="BlogModerators" />
+                <ScalarProperty Name="BlogModerateComments" ColumnName="BlogModerateComments" />
+                <ScalarProperty Name="BlogEnableSubscriptions" ColumnName="BlogEnableSubscriptions" />
+                <ScalarProperty Name="BlogUnsubscriptionUrl" ColumnName="BlogUnsubscriptionUrl" />
+                <ScalarProperty Name="BlogRequireEmails" ColumnName="BlogRequireEmails" />
+                <ScalarProperty Name="BlogUseCAPTCHAForComments" ColumnName="BlogUseCAPTCHAForComments" />
+                <ScalarProperty Name="BlogAllowAnonymousComments" ColumnName="BlogAllowAnonymousComments" />
+                <ScalarProperty Name="BlogSendCommentsToEmail" ColumnName="BlogSendCommentsToEmail" />
+                <ScalarProperty Name="BlogOpenCommentsFor" ColumnName="BlogOpenCommentsFor" />
+                <ScalarProperty Name="BlogTeaser" ColumnName="BlogTeaser" />
+                <ScalarProperty Name="BlogSideColumnText" ColumnName="BlogSideColumnText" />
+                <ScalarProperty Name="BlogDescription" ColumnName="BlogDescription" />
+                <ScalarProperty Name="BlogName" ColumnName="BlogName" />
+                <ScalarProperty Name="BlogID" ColumnName="BlogID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CONTENT_BlogMonth">
+            <EntityTypeMapping TypeName="kenticofreeModel.CONTENT_BlogMonth">
+              <MappingFragment StoreEntitySet="CONTENT_BlogMonth">
+                <ScalarProperty Name="BlogMonthStartingDate" ColumnName="BlogMonthStartingDate" />
+                <ScalarProperty Name="BlogMonthName" ColumnName="BlogMonthName" />
+                <ScalarProperty Name="BlogMonthID" ColumnName="BlogMonthID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="BlogPosts" ZoomLevel="53">
+        <EntityTypeShape EntityType="kenticofreeModel.Blog_Comment" Width="1.5" PointX="5.25" PointY="4.25" Height="3.7109993489583317" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_Attachment" Width="1.5" PointX="5.25" PointY="8.75" Height="5.2494108072916674" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_Document" Width="1.5" PointX="3" PointY="1.625" Height="17.172099609375" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_DocumentAlias" Width="1.5" PointX="7.75" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_DocumentCategory" Width="1.5" PointX="5.25" PointY="14.75" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_Tag" Width="1.5" PointX="8.25" PointY="9.125" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_TagGroup" Width="1.5" PointX="0.75" PointY="8.75" Height="2.9417936197916674" IsExpanded="true" />
+        <EntityTypeShape EntityType="kenticofreeModel.CONTENT_BlogPost" Width="1.5" PointX="9.75" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
+        <AssociationConnector Association="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="6.1054996744791659" />
+          <ConnectorPoint PointX="5.25" PointY="6.1054996744791659" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="11.374705403645834" />
+          <ConnectorPoint PointX="5.25" PointY="11.374705403645834" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="10.220896809895834" />
+          <ConnectorPoint PointX="3" PointY="10.220896809895834" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="15.547841796875" />
+          <ConnectorPoint PointX="5.25" PointY="15.547841796875" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Tag_TagGroupID_CMS_TagGroup" ManuallyRouted="false">
+          <ConnectorPoint PointX="1.5" PointY="11.691793619791667" />
+          <ConnectorPoint PointX="1.5" PointY="19.047099609375" />
+          <ConnectorPoint PointX="7.875" PointY="19.047099609375" />
+          <ConnectorPoint PointX="7.875" PointY="10.2112939453125" />
+          <ConnectorPoint PointX="8.25" PointY="10.2112939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.CMS_DocumentTag" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="17.6026416015625" />
+          <ConnectorPoint PointX="7.791666666666667" PointY="17.6026416015625" />
+          <ConnectorPoint PointX="7.958333333333333" PointY="17.6026416015625" />
+          <ConnectorPoint PointX="9" PointY="17.6026416015625" />
+          <ConnectorPoint PointX="9" PointY="11.297587890625" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="kenticofreeModel.CONTENT_Blog" Width="1.5" PointX="10.375" PointY="5.75" Height="4.4802050781250031" />
+        <EntityTypeShape EntityType="kenticofreeModel.CONTENT_BlogMonth" Width="1.5" PointX="7.375" PointY="5.75" Height="1.5956835937499996" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
