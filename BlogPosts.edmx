@@ -4,26 +4,56 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="kenticofreeModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="kenticofreeModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="kenticofreeModelStoreContainer">
           <EntitySet Name="Blog_Comment" EntityType="kenticofreeModel.Store.Blog_Comment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_Attachment" EntityType="kenticofreeModel.Store.CMS_Attachment" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_Class" EntityType="kenticofreeModel.Store.CMS_Class" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_Document" EntityType="kenticofreeModel.Store.CMS_Document" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_DocumentAlias" EntityType="kenticofreeModel.Store.CMS_DocumentAlias" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_DocumentCategory" EntityType="kenticofreeModel.Store.CMS_DocumentCategory" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_DocumentTag" EntityType="kenticofreeModel.Store.CMS_DocumentTag" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_Tag" EntityType="kenticofreeModel.Store.CMS_Tag" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CMS_TagGroup" EntityType="kenticofreeModel.Store.CMS_TagGroup" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_Tree" EntityType="kenticofreeModel.Store.CMS_Tree" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_User" EntityType="kenticofreeModel.Store.CMS_User" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_UserRole" EntityType="kenticofreeModel.Store.CMS_UserRole" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_UserSettings" EntityType="kenticofreeModel.Store.CMS_UserSettings" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="CMS_UserSite" EntityType="kenticofreeModel.Store.CMS_UserSite" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CONTENT_Blog" EntityType="kenticofreeModel.Store.CONTENT_Blog" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CONTENT_BlogMonth" EntityType="kenticofreeModel.Store.CONTENT_BlogMonth" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CONTENT_BlogPost" EntityType="kenticofreeModel.Store.CONTENT_BlogPost" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Blog_Comment_CommentApprovedByUserID_CMS_User" Association="kenticofreeModel.Store.FK_Blog_Comment_CommentApprovedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
           <AssociationSet Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
             <End Role="CMS_Document" EntitySet="CMS_Document" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Blog_Comment_CommentUserID_CMS_User" Association="kenticofreeModel.Store.FK_Blog_Comment_CommentUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
             <End Role="Blog_Comment" EntitySet="Blog_Comment" />
           </AssociationSet>
           <AssociationSet Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
             <End Role="CMS_Document" EntitySet="CMS_Document" />
             <End Role="CMS_Attachment" EntitySet="CMS_Attachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Class_CMS_Class" Association="kenticofreeModel.Store.FK_CMS_Class_CMS_Class">
+            <End Role="CMS_Class" EntitySet="CMS_Class" />
+            <End Role="CMS_Class1" EntitySet="CMS_Class" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentCreatedByUserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentCreatedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentModifiedByUserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentModifiedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
           </AssociationSet>
           <AssociationSet Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
             <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
@@ -44,6 +74,30 @@
           <AssociationSet Name="FK_CMS_Tag_TagGroupID_CMS_TagGroup" Association="kenticofreeModel.Store.FK_CMS_Tag_TagGroupID_CMS_TagGroup">
             <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
             <End Role="CMS_Tag" EntitySet="CMS_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeClassID_CMS_Class" Association="kenticofreeModel.Store.FK_CMS_Tree_NodeClassID_CMS_Class">
+            <End Role="CMS_Class" EntitySet="CMS_Class" />
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeOwner_CMS_User" Association="kenticofreeModel.Store.FK_CMS_Tree_NodeOwner_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserRole_UserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_UserRole_UserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserRole" EntitySet="CMS_UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSettings_UserActivatedByUserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_UserSettings_UserActivatedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSettings" EntitySet="CMS_UserSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSettings_UserSettingsUserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_UserSettings_UserSettingsUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSettings" EntitySet="CMS_UserSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSite_UserID_CMS_User" Association="kenticofreeModel.Store.FK_CMS_UserSite_UserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSite" EntitySet="CMS_UserSite" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Blog_Comment">
@@ -89,6 +143,56 @@
           <Property Name="AttachmentTitle" Type="nvarchar" MaxLength="250" />
           <Property Name="AttachmentDescription" Type="nvarchar(max)" />
           <Property Name="AttachmentCustomData" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CMS_Class">
+          <Key>
+            <PropertyRef Name="ClassID" />
+          </Key>
+          <Property Name="ClassID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ClassDisplayName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ClassName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ClassUsesVersioning" Type="bit" Nullable="false" />
+          <Property Name="ClassIsDocumentType" Type="bit" Nullable="false" />
+          <Property Name="ClassIsCoupledClass" Type="bit" Nullable="false" />
+          <Property Name="ClassXmlSchema" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ClassFormDefinition" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ClassEditingPageUrl" Type="nvarchar" Nullable="false" MaxLength="450" />
+          <Property Name="ClassListPageUrl" Type="nvarchar" Nullable="false" MaxLength="450" />
+          <Property Name="ClassNodeNameSource" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ClassTableName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ClassViewPageUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="ClassPreviewPageUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="ClassFormLayout" Type="nvarchar(max)" />
+          <Property Name="ClassNewPageUrl" Type="nvarchar" MaxLength="450" />
+          <Property Name="ClassShowAsSystemTable" Type="bit" Nullable="false" />
+          <Property Name="ClassUsePublishFromTo" Type="bit" />
+          <Property Name="ClassShowTemplateSelection" Type="bit" />
+          <Property Name="ClassSKUMappings" Type="nvarchar(max)" />
+          <Property Name="ClassIsMenuItemType" Type="bit" />
+          <Property Name="ClassNodeAliasSource" Type="nvarchar" MaxLength="100" />
+          <Property Name="ClassDefaultPageTemplateID" Type="int" />
+          <Property Name="ClassLastModified" Type="datetime" Nullable="false" />
+          <Property Name="ClassGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ClassCreateSKU" Type="bit" />
+          <Property Name="ClassIsProduct" Type="bit" />
+          <Property Name="ClassIsCustomTable" Type="bit" Nullable="false" />
+          <Property Name="ClassShowColumns" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ClassLoadGeneration" Type="int" Nullable="false" />
+          <Property Name="ClassSearchTitleColumn" Type="nvarchar" MaxLength="200" />
+          <Property Name="ClassSearchContentColumn" Type="nvarchar" MaxLength="200" />
+          <Property Name="ClassSearchImageColumn" Type="nvarchar" MaxLength="200" />
+          <Property Name="ClassSearchCreationDateColumn" Type="nvarchar" MaxLength="200" />
+          <Property Name="ClassSearchSettings" Type="nvarchar(max)" />
+          <Property Name="ClassInheritsFromClassID" Type="int" />
+          <Property Name="ClassSearchEnabled" Type="bit" />
+          <Property Name="ClassSKUDefaultDepartmentName" Type="nvarchar" MaxLength="200" />
+          <Property Name="ClassSKUDefaultDepartmentID" Type="int" />
+          <Property Name="ClassContactMapping" Type="nvarchar(max)" />
+          <Property Name="ClassContactOverwriteEnabled" Type="bit" />
+          <Property Name="ClassSKUDefaultProductType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClassConnectionString" Type="nvarchar" MaxLength="100" />
+          <Property Name="ClassIsProductSection" Type="bit" />
+          <Property Name="ClassPageTemplateCategoryID" Type="int" />
         </EntityType>
         <EntityType Name="CMS_Document">
           <Key>
@@ -229,6 +333,148 @@
           <Property Name="TagGroupLastModified" Type="datetime" Nullable="false" />
           <Property Name="TagGroupGUID" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="CMS_Tree">
+          <Key>
+            <PropertyRef Name="NodeID" />
+          </Key>
+          <Property Name="NodeID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="NodeAliasPath" Type="nvarchar" Nullable="false" MaxLength="450" />
+          <Property Name="NodeName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="NodeAlias" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="NodeClassID" Type="int" Nullable="false" />
+          <Property Name="NodeParentID" Type="int" Nullable="false" />
+          <Property Name="NodeLevel" Type="int" Nullable="false" />
+          <Property Name="NodeACLID" Type="int" />
+          <Property Name="NodeSiteID" Type="int" Nullable="false" />
+          <Property Name="NodeGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NodeOrder" Type="int" />
+          <Property Name="IsSecuredNode" Type="bit" />
+          <Property Name="NodeCacheMinutes" Type="int" />
+          <Property Name="NodeSKUID" Type="int" />
+          <Property Name="NodeDocType" Type="nvarchar(max)" />
+          <Property Name="NodeHeadTags" Type="nvarchar(max)" />
+          <Property Name="NodeBodyElementAttributes" Type="nvarchar(max)" />
+          <Property Name="NodeInheritPageLevels" Type="nvarchar" MaxLength="200" />
+          <Property Name="NodeChildNodesCount" Type="int" />
+          <Property Name="RequiresSSL" Type="int" />
+          <Property Name="NodeLinkedNodeID" Type="int" />
+          <Property Name="NodeOwner" Type="int" />
+          <Property Name="NodeCustomData" Type="nvarchar(max)" />
+          <Property Name="NodeGroupID" Type="int" />
+          <Property Name="NodeLinkedNodeSiteID" Type="int" />
+          <Property Name="NodeTemplateID" Type="int" />
+          <Property Name="NodeWireframeTemplateID" Type="int" />
+          <Property Name="NodeWireframeComment" Type="nvarchar(max)" />
+          <Property Name="NodeTemplateForAllCultures" Type="bit" />
+          <Property Name="NodeInheritPageTemplate" Type="bit" />
+          <Property Name="NodeWireframeInheritPageLevels" Type="nvarchar" MaxLength="450" />
+          <Property Name="NodeAllowCacheInFileSystem" Type="bit" />
+        </EntityType>
+        <EntityType Name="CMS_User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="100" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="450" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserPassword" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="PreferredCultureCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="PreferredUICultureCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="UserEnabled" Type="bit" Nullable="false" />
+          <Property Name="UserIsEditor" Type="bit" Nullable="false" />
+          <Property Name="UserIsGlobalAdministrator" Type="bit" Nullable="false" />
+          <Property Name="UserIsExternal" Type="bit" />
+          <Property Name="UserPasswordFormat" Type="nvarchar" MaxLength="10" />
+          <Property Name="UserCreated" Type="datetime" />
+          <Property Name="LastLogon" Type="datetime" />
+          <Property Name="UserStartingAliasPath" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserLastModified" Type="datetime" Nullable="false" />
+          <Property Name="UserLastLogonInfo" Type="nvarchar(max)" />
+          <Property Name="UserIsHidden" Type="bit" />
+          <Property Name="UserVisibility" Type="nvarchar(max)" />
+          <Property Name="UserIsDomain" Type="bit" />
+          <Property Name="UserHasAllowedCultures" Type="bit" />
+          <Property Name="UserSiteManagerDisabled" Type="bit" />
+        </EntityType>
+        <EntityType Name="CMS_UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
+          <Property Name="ValidTo" Type="datetime" />
+          <Property Name="UserRoleID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="CMS_UserSettings">
+          <Key>
+            <PropertyRef Name="UserSettingsID" />
+          </Key>
+          <Property Name="UserSettingsID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserNickName" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserPicture" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserSignature" Type="nvarchar(max)" />
+          <Property Name="UserURLReferrer" Type="nvarchar" MaxLength="450" />
+          <Property Name="UserCampaign" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserMessagingNotificationEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserCustomData" Type="nvarchar(max)" />
+          <Property Name="UserRegistrationInfo" Type="nvarchar(max)" />
+          <Property Name="UserPreferences" Type="nvarchar(max)" />
+          <Property Name="UserActivationDate" Type="datetime" />
+          <Property Name="UserActivatedByUserID" Type="int" />
+          <Property Name="UserTimeZoneID" Type="int" />
+          <Property Name="UserAvatarID" Type="int" />
+          <Property Name="UserBadgeID" Type="int" />
+          <Property Name="UserShowSplashScreen" Type="bit" />
+          <Property Name="UserActivityPoints" Type="int" />
+          <Property Name="UserForumPosts" Type="int" />
+          <Property Name="UserBlogComments" Type="int" />
+          <Property Name="UserGender" Type="int" />
+          <Property Name="UserDateOfBirth" Type="datetime" />
+          <Property Name="UserMessageBoardPosts" Type="int" />
+          <Property Name="UserSettingsUserGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserSettingsUserID" Type="int" Nullable="false" />
+          <Property Name="WindowsLiveID" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserBlogPosts" Type="int" />
+          <Property Name="UserWaitingForApproval" Type="bit" />
+          <Property Name="UserDialogsConfiguration" Type="nvarchar(max)" />
+          <Property Name="UserDescription" Type="nvarchar(max)" />
+          <Property Name="UserUsedWebParts" Type="nvarchar" MaxLength="1000" />
+          <Property Name="UserUsedWidgets" Type="nvarchar" MaxLength="1000" />
+          <Property Name="UserFacebookID" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserAuthenticationGUID" Type="uniqueidentifier" />
+          <Property Name="UserSkype" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserIM" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserPhone" Type="nvarchar" MaxLength="26" />
+          <Property Name="UserPosition" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserBounces" Type="int" />
+          <Property Name="UserLinkedInID" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserLogActivities" Type="bit" />
+          <Property Name="UserPasswordRequestHash" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserWebPartToolbarEnabled" Type="bit" />
+          <Property Name="UserWebPartToolbarPosition" Type="nvarchar" MaxLength="10" />
+          <Property Name="UserInvalidLogOnAttempts" Type="int" />
+          <Property Name="UserInvalidLogOnAttemptsHash" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserAvatarType" Type="nvarchar" MaxLength="200" />
+          <Property Name="UserAccountLockReason" Type="int" />
+          <Property Name="UserPasswordLastChanged" Type="datetime" />
+        </EntityType>
+        <EntityType Name="CMS_UserSite">
+          <Key>
+            <PropertyRef Name="UserSiteID" />
+          </Key>
+          <Property Name="UserSiteID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="SiteID" Type="int" Nullable="false" />
+          <Property Name="UserPreferredCurrencyID" Type="int" />
+          <Property Name="UserPreferredShippingOptionID" Type="int" />
+          <Property Name="UserPreferredPaymentOptionID" Type="int" />
+          <Property Name="UserDiscountLevelID" Type="int" />
+        </EntityType>
         <EntityType Name="CONTENT_Blog">
           <Key>
             <PropertyRef Name="BlogID" />
@@ -277,6 +523,18 @@
           <Property Name="TwitterAutoPost" Type="nvarchar(max)" />
           <Property Name="BlogLogActivity" Type="bit" />
         </EntityType>
+        <Association Name="FK_Blog_Comment_CommentApprovedByUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="Blog_Comment" Type="kenticofreeModel.Store.Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentApprovedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Blog_Comment_CommentPostDocumentID_CMS_Document">
           <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="1" />
           <End Role="Blog_Comment" Type="kenticofreeModel.Store.Blog_Comment" Multiplicity="*" />
@@ -289,6 +547,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Blog_Comment_CommentUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="Blog_Comment" Type="kenticofreeModel.Store.Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CMS_Attachment_AttachmentDocumentID_CMS_Document">
           <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="0..1" />
           <End Role="CMS_Attachment" Type="kenticofreeModel.Store.CMS_Attachment" Multiplicity="*" />
@@ -298,6 +568,54 @@
             </Principal>
             <Dependent Role="CMS_Attachment">
               <PropertyRef Name="AttachmentDocumentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Class_CMS_Class">
+          <End Role="CMS_Class" Type="kenticofreeModel.Store.CMS_Class" Multiplicity="1" />
+          <End Role="CMS_Class1" Type="kenticofreeModel.Store.CMS_Class" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="CMS_Class1">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentCheckedOutByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentCreatedByUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentCreatedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentModifiedByUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentModifiedByUserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -361,6 +679,78 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CMS_Tree_NodeClassID_CMS_Class">
+          <End Role="CMS_Class" Type="kenticofreeModel.Store.CMS_Class" Multiplicity="1" />
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="CMS_Tree">
+              <PropertyRef Name="NodeClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_NodeOwner_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Tree">
+              <PropertyRef Name="NodeOwner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserRole_UserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="1" />
+          <End Role="CMS_UserRole" Type="kenticofreeModel.Store.CMS_UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserRole">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSettings_UserActivatedByUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="0..1" />
+          <End Role="CMS_UserSettings" Type="kenticofreeModel.Store.CMS_UserSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSettings">
+              <PropertyRef Name="UserActivatedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSettings_UserSettingsUserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="1" />
+          <End Role="CMS_UserSettings" Type="kenticofreeModel.Store.CMS_UserSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSettings">
+              <PropertyRef Name="UserSettingsUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSite_UserID_CMS_User">
+          <End Role="CMS_User" Type="kenticofreeModel.Store.CMS_User" Multiplicity="1" />
+          <End Role="CMS_UserSite" Type="kenticofreeModel.Store.CMS_UserSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSite">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -400,6 +790,60 @@
           </AssociationSet>
           <EntitySet Name="CONTENT_Blog" EntityType="kenticofreeModel.CONTENT_Blog" />
           <EntitySet Name="CONTENT_BlogMonth" EntityType="kenticofreeModel.CONTENT_BlogMonth" />
+          <EntitySet Name="CMS_Tree" EntityType="kenticofreeModel.CMS_Tree" />
+          <EntitySet Name="CMS_Class" EntityType="kenticofreeModel.CMS_Class" />
+          <AssociationSet Name="FK_CMS_Class_CMS_Class" Association="kenticofreeModel.FK_CMS_Class_CMS_Class">
+            <End Role="CMS_Class" EntitySet="CMS_Class" />
+            <End Role="CMS_Class1" EntitySet="CMS_Class" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeClassID_CMS_Class" Association="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class">
+            <End Role="CMS_Class" EntitySet="CMS_Class" />
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <EntitySet Name="CMS_User" EntityType="kenticofreeModel.CMS_User" />
+          <EntitySet Name="CMS_UserRole" EntityType="kenticofreeModel.CMS_UserRole" />
+          <EntitySet Name="CMS_UserSettings" EntityType="kenticofreeModel.CMS_UserSettings" />
+          <EntitySet Name="CMS_UserSite" EntityType="kenticofreeModel.CMS_UserSite" />
+          <AssociationSet Name="FK_Blog_Comment_CommentApprovedByUserID_CMS_User" Association="kenticofreeModel.FK_Blog_Comment_CommentApprovedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Blog_Comment_CommentUserID_CMS_User" Association="kenticofreeModel.FK_Blog_Comment_CommentUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="Blog_Comment" EntitySet="Blog_Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" Association="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentCreatedByUserID_CMS_User" Association="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentModifiedByUserID_CMS_User" Association="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeOwner_CMS_User" Association="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserRole_UserID_CMS_User" Association="kenticofreeModel.FK_CMS_UserRole_UserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserRole" EntitySet="CMS_UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSettings_UserActivatedByUserID_CMS_User" Association="kenticofreeModel.FK_CMS_UserSettings_UserActivatedByUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSettings" EntitySet="CMS_UserSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSettings_UserSettingsUserID_CMS_User" Association="kenticofreeModel.FK_CMS_UserSettings_UserSettingsUserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSettings" EntitySet="CMS_UserSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_UserSite_UserID_CMS_User" Association="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User">
+            <End Role="CMS_User" EntitySet="CMS_User" />
+            <End Role="CMS_UserSite" EntitySet="CMS_UserSite" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Blog_Comment">
           <Key>
@@ -419,6 +863,8 @@
           <Property Name="CommentEmail" Type="String" MaxLength="250" Unicode="true" FixedLength="false" />
           <Property Name="CommentInfo" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" FromRole="Blog_Comment" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_Blog_Comment_CommentApprovedByUserID_CMS_User" FromRole="Blog_Comment" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_User1" Relationship="kenticofreeModel.FK_Blog_Comment_CommentUserID_CMS_User" FromRole="Blog_Comment" ToRole="CMS_User" />
         </EntityType>
         <EntityType Name="CMS_Attachment">
           <Key>
@@ -535,6 +981,9 @@
           <NavigationProperty Name="CMS_TagGroup" Relationship="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" FromRole="CMS_Document" ToRole="CMS_TagGroup" />
           <NavigationProperty Name="CMS_DocumentCategory" Relationship="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document" FromRole="CMS_Document" ToRole="CMS_DocumentCategory" />
           <NavigationProperty Name="CMS_Tag" Relationship="kenticofreeModel.CMS_DocumentTag" FromRole="CMS_Document" ToRole="CMS_Tag" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_User1" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_User2" Relationship="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
         </EntityType>
         <EntityType Name="CMS_DocumentAlias">
           <Key>
@@ -592,7 +1041,7 @@
           <Key>
             <PropertyRef Name="BlogPostID" />
           </Key>
-          <Property Name="BlogPostID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BlogPostID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="BlogPostTitle" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
           <Property Name="BlogPostDate" Type="DateTime" Nullable="false" />
           <Property Name="BlogPostSummary" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
@@ -700,6 +1149,361 @@
           <Property Type="String" Name="BlogMonthName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="BlogMonthStartingDate" Nullable="false" />
         </EntityType>
+        <EntityType Name="CMS_Tree">
+          <Key>
+            <PropertyRef Name="NodeID" />
+          </Key>
+          <Property Type="Int32" Name="NodeID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="NodeAliasPath" Nullable="false" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NodeName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NodeAlias" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="NodeClassID" Nullable="false" />
+          <Property Type="Int32" Name="NodeParentID" Nullable="false" />
+          <Property Type="Int32" Name="NodeLevel" Nullable="false" />
+          <Property Type="Int32" Name="NodeACLID" />
+          <Property Type="Int32" Name="NodeSiteID" Nullable="false" />
+          <Property Type="Guid" Name="NodeGUID" Nullable="false" />
+          <Property Type="Int32" Name="NodeOrder" />
+          <Property Type="Boolean" Name="IsSecuredNode" />
+          <Property Type="Int32" Name="NodeCacheMinutes" />
+          <Property Type="Int32" Name="NodeSKUID" />
+          <Property Type="String" Name="NodeDocType" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NodeHeadTags" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NodeBodyElementAttributes" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NodeInheritPageLevels" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="NodeChildNodesCount" />
+          <Property Type="Int32" Name="RequiresSSL" />
+          <Property Type="Int32" Name="NodeLinkedNodeID" />
+          <Property Type="Int32" Name="NodeOwner" />
+          <Property Type="String" Name="NodeCustomData" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="NodeGroupID" />
+          <Property Type="Int32" Name="NodeLinkedNodeSiteID" />
+          <Property Type="Int32" Name="NodeTemplateID" />
+          <Property Type="Int32" Name="NodeWireframeTemplateID" />
+          <Property Type="String" Name="NodeWireframeComment" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="NodeTemplateForAllCultures" />
+          <Property Type="Boolean" Name="NodeInheritPageTemplate" />
+          <Property Type="String" Name="NodeWireframeInheritPageLevels" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="NodeAllowCacheInFileSystem" />
+          <NavigationProperty Name="CMS_Class" Relationship="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class" FromRole="CMS_Tree" ToRole="CMS_Class" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User" FromRole="CMS_Tree" ToRole="CMS_User" />
+        </EntityType>
+        <EntityType Name="CMS_Class">
+          <Key>
+            <PropertyRef Name="ClassID" />
+          </Key>
+          <Property Type="Int32" Name="ClassID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="ClassDisplayName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ClassUsesVersioning" Nullable="false" />
+          <Property Type="Boolean" Name="ClassIsDocumentType" Nullable="false" />
+          <Property Type="Boolean" Name="ClassIsCoupledClass" Nullable="false" />
+          <Property Type="String" Name="ClassXmlSchema" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassFormDefinition" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassEditingPageUrl" Nullable="false" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassListPageUrl" Nullable="false" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassNodeNameSource" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassTableName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassViewPageUrl" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassPreviewPageUrl" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassFormLayout" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassNewPageUrl" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ClassShowAsSystemTable" Nullable="false" />
+          <Property Type="Boolean" Name="ClassUsePublishFromTo" />
+          <Property Type="Boolean" Name="ClassShowTemplateSelection" />
+          <Property Type="String" Name="ClassSKUMappings" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ClassIsMenuItemType" />
+          <Property Type="String" Name="ClassNodeAliasSource" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ClassDefaultPageTemplateID" />
+          <Property Type="DateTime" Name="ClassLastModified" Nullable="false" />
+          <Property Type="Guid" Name="ClassGUID" Nullable="false" />
+          <Property Type="Boolean" Name="ClassCreateSKU" />
+          <Property Type="Boolean" Name="ClassIsProduct" />
+          <Property Type="Boolean" Name="ClassIsCustomTable" Nullable="false" />
+          <Property Type="String" Name="ClassShowColumns" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ClassLoadGeneration" Nullable="false" />
+          <Property Type="String" Name="ClassSearchTitleColumn" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassSearchContentColumn" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassSearchImageColumn" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassSearchCreationDateColumn" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassSearchSettings" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ClassInheritsFromClassID" />
+          <Property Type="Boolean" Name="ClassSearchEnabled" />
+          <Property Type="String" Name="ClassSKUDefaultDepartmentName" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ClassSKUDefaultDepartmentID" />
+          <Property Type="String" Name="ClassContactMapping" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ClassContactOverwriteEnabled" />
+          <Property Type="String" Name="ClassSKUDefaultProductType" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassConnectionString" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ClassIsProductSection" />
+          <Property Type="Int32" Name="ClassPageTemplateCategoryID" />
+          <NavigationProperty Name="CMS_Class1" Relationship="kenticofreeModel.FK_CMS_Class_CMS_Class" FromRole="CMS_Class" ToRole="CMS_Class1" />
+          <NavigationProperty Name="CMS_Class2" Relationship="kenticofreeModel.FK_CMS_Class_CMS_Class" FromRole="CMS_Class1" ToRole="CMS_Class" />
+          <NavigationProperty Name="CMS_Tree" Relationship="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class" FromRole="CMS_Class" ToRole="CMS_Tree" />
+        </EntityType>
+        <Association Name="FK_CMS_Class_CMS_Class">
+          <End Type="kenticofreeModel.CMS_Class" Role="CMS_Class" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_Class" Role="CMS_Class1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="CMS_Class1">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_NodeClassID_CMS_Class">
+          <End Type="kenticofreeModel.CMS_Class" Role="CMS_Class" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Class">
+              <PropertyRef Name="ClassID" />
+            </Principal>
+            <Dependent Role="CMS_Tree">
+              <PropertyRef Name="NodeClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CMS_User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Type="Int32" Name="UserID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="FirstName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="MiddleName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="LastName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="FullName" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Email" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserPassword" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="PreferredCultureCode" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="PreferredUICultureCode" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="UserEnabled" Nullable="false" />
+          <Property Type="Boolean" Name="UserIsEditor" Nullable="false" />
+          <Property Type="Boolean" Name="UserIsGlobalAdministrator" Nullable="false" />
+          <Property Type="Boolean" Name="UserIsExternal" />
+          <Property Type="String" Name="UserPasswordFormat" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="UserCreated" />
+          <Property Type="DateTime" Name="LastLogon" />
+          <Property Type="String" Name="UserStartingAliasPath" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Guid" Name="UserGUID" Nullable="false" />
+          <Property Type="DateTime" Name="UserLastModified" Nullable="false" />
+          <Property Type="String" Name="UserLastLogonInfo" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="UserIsHidden" />
+          <Property Type="String" Name="UserVisibility" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="UserIsDomain" />
+          <Property Type="Boolean" Name="UserHasAllowedCultures" />
+          <Property Type="Boolean" Name="UserSiteManagerDisabled" />
+          <NavigationProperty Name="Blog_Comment" Relationship="kenticofreeModel.FK_Blog_Comment_CommentApprovedByUserID_CMS_User" FromRole="CMS_User" ToRole="Blog_Comment" />
+          <NavigationProperty Name="Blog_Comment1" Relationship="kenticofreeModel.FK_Blog_Comment_CommentUserID_CMS_User" FromRole="CMS_User" ToRole="Blog_Comment" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" FromRole="CMS_User" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_Document1" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User" FromRole="CMS_User" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_Document2" Relationship="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User" FromRole="CMS_User" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_Tree" Relationship="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User" FromRole="CMS_User" ToRole="CMS_Tree" />
+          <NavigationProperty Name="CMS_UserRole" Relationship="kenticofreeModel.FK_CMS_UserRole_UserID_CMS_User" FromRole="CMS_User" ToRole="CMS_UserRole" />
+          <NavigationProperty Name="CMS_UserSettings" Relationship="kenticofreeModel.FK_CMS_UserSettings_UserActivatedByUserID_CMS_User" FromRole="CMS_User" ToRole="CMS_UserSettings" />
+          <NavigationProperty Name="CMS_UserSettings1" Relationship="kenticofreeModel.FK_CMS_UserSettings_UserSettingsUserID_CMS_User" FromRole="CMS_User" ToRole="CMS_UserSettings" />
+          <NavigationProperty Name="CMS_UserSite" Relationship="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User" FromRole="CMS_User" ToRole="CMS_UserSite" />
+        </EntityType>
+        <EntityType Name="CMS_UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleID" />
+          </Key>
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="Int32" Name="RoleID" Nullable="false" />
+          <Property Type="DateTime" Name="ValidTo" />
+          <Property Type="Int32" Name="UserRoleID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_UserRole_UserID_CMS_User" FromRole="CMS_UserRole" ToRole="CMS_User" />
+        </EntityType>
+        <EntityType Name="CMS_UserSettings">
+          <Key>
+            <PropertyRef Name="UserSettingsID" />
+          </Key>
+          <Property Type="Int32" Name="UserSettingsID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="UserNickName" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserPicture" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserSignature" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserURLReferrer" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserCampaign" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserMessagingNotificationEmail" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserCustomData" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserRegistrationInfo" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserPreferences" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="UserActivationDate" />
+          <Property Type="Int32" Name="UserActivatedByUserID" />
+          <Property Type="Int32" Name="UserTimeZoneID" />
+          <Property Type="Int32" Name="UserAvatarID" />
+          <Property Type="Int32" Name="UserBadgeID" />
+          <Property Type="Boolean" Name="UserShowSplashScreen" />
+          <Property Type="Int32" Name="UserActivityPoints" />
+          <Property Type="Int32" Name="UserForumPosts" />
+          <Property Type="Int32" Name="UserBlogComments" />
+          <Property Type="Int32" Name="UserGender" />
+          <Property Type="DateTime" Name="UserDateOfBirth" />
+          <Property Type="Int32" Name="UserMessageBoardPosts" />
+          <Property Type="Guid" Name="UserSettingsUserGUID" Nullable="false" />
+          <Property Type="Int32" Name="UserSettingsUserID" Nullable="false" />
+          <Property Type="String" Name="WindowsLiveID" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="UserBlogPosts" />
+          <Property Type="Boolean" Name="UserWaitingForApproval" />
+          <Property Type="String" Name="UserDialogsConfiguration" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserDescription" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserUsedWebParts" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserUsedWidgets" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserFacebookID" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Guid" Name="UserAuthenticationGUID" />
+          <Property Type="String" Name="UserSkype" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserIM" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserPhone" MaxLength="26" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserPosition" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="UserBounces" />
+          <Property Type="String" Name="UserLinkedInID" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="UserLogActivities" />
+          <Property Type="String" Name="UserPasswordRequestHash" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="UserWebPartToolbarEnabled" />
+          <Property Type="String" Name="UserWebPartToolbarPosition" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="UserInvalidLogOnAttempts" />
+          <Property Type="String" Name="UserInvalidLogOnAttemptsHash" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="UserAvatarType" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="UserAccountLockReason" />
+          <Property Type="DateTime" Name="UserPasswordLastChanged" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_UserSettings_UserActivatedByUserID_CMS_User" FromRole="CMS_UserSettings" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_User1" Relationship="kenticofreeModel.FK_CMS_UserSettings_UserSettingsUserID_CMS_User" FromRole="CMS_UserSettings" ToRole="CMS_User" />
+        </EntityType>
+        <EntityType Name="CMS_UserSite">
+          <Key>
+            <PropertyRef Name="UserSiteID" />
+          </Key>
+          <Property Type="Int32" Name="UserSiteID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="Int32" Name="SiteID" Nullable="false" />
+          <Property Type="Int32" Name="UserPreferredCurrencyID" />
+          <Property Type="Int32" Name="UserPreferredShippingOptionID" />
+          <Property Type="Int32" Name="UserPreferredPaymentOptionID" />
+          <Property Type="Int32" Name="UserDiscountLevelID" />
+          <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User" FromRole="CMS_UserSite" ToRole="CMS_User" />
+        </EntityType>
+        <Association Name="FK_Blog_Comment_CommentApprovedByUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.Blog_Comment" Role="Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentApprovedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Blog_Comment_CommentUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.Blog_Comment" Role="Blog_Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Blog_Comment">
+              <PropertyRef Name="CommentUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_Document" Role="CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentCheckedOutByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentCreatedByUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_Document" Role="CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentCreatedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentModifiedByUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_Document" Role="CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentModifiedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_NodeOwner_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_Tree">
+              <PropertyRef Name="NodeOwner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserRole_UserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_UserRole" Role="CMS_UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserRole">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSettings_UserActivatedByUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_UserSettings" Role="CMS_UserSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSettings">
+              <PropertyRef Name="UserActivatedByUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSettings_UserSettingsUserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_UserSettings" Role="CMS_UserSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSettings">
+              <PropertyRef Name="UserSettingsUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_UserSite_UserID_CMS_User">
+          <End Type="kenticofreeModel.CMS_User" Role="CMS_User" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_UserSite" Role="CMS_UserSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="CMS_UserSite">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -946,6 +1750,204 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CMS_Tree">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_Tree">
+              <MappingFragment StoreEntitySet="CMS_Tree">
+                <ScalarProperty Name="NodeAllowCacheInFileSystem" ColumnName="NodeAllowCacheInFileSystem" />
+                <ScalarProperty Name="NodeWireframeInheritPageLevels" ColumnName="NodeWireframeInheritPageLevels" />
+                <ScalarProperty Name="NodeInheritPageTemplate" ColumnName="NodeInheritPageTemplate" />
+                <ScalarProperty Name="NodeTemplateForAllCultures" ColumnName="NodeTemplateForAllCultures" />
+                <ScalarProperty Name="NodeWireframeComment" ColumnName="NodeWireframeComment" />
+                <ScalarProperty Name="NodeWireframeTemplateID" ColumnName="NodeWireframeTemplateID" />
+                <ScalarProperty Name="NodeTemplateID" ColumnName="NodeTemplateID" />
+                <ScalarProperty Name="NodeLinkedNodeSiteID" ColumnName="NodeLinkedNodeSiteID" />
+                <ScalarProperty Name="NodeGroupID" ColumnName="NodeGroupID" />
+                <ScalarProperty Name="NodeCustomData" ColumnName="NodeCustomData" />
+                <ScalarProperty Name="NodeOwner" ColumnName="NodeOwner" />
+                <ScalarProperty Name="NodeLinkedNodeID" ColumnName="NodeLinkedNodeID" />
+                <ScalarProperty Name="RequiresSSL" ColumnName="RequiresSSL" />
+                <ScalarProperty Name="NodeChildNodesCount" ColumnName="NodeChildNodesCount" />
+                <ScalarProperty Name="NodeInheritPageLevels" ColumnName="NodeInheritPageLevels" />
+                <ScalarProperty Name="NodeBodyElementAttributes" ColumnName="NodeBodyElementAttributes" />
+                <ScalarProperty Name="NodeHeadTags" ColumnName="NodeHeadTags" />
+                <ScalarProperty Name="NodeDocType" ColumnName="NodeDocType" />
+                <ScalarProperty Name="NodeSKUID" ColumnName="NodeSKUID" />
+                <ScalarProperty Name="NodeCacheMinutes" ColumnName="NodeCacheMinutes" />
+                <ScalarProperty Name="IsSecuredNode" ColumnName="IsSecuredNode" />
+                <ScalarProperty Name="NodeOrder" ColumnName="NodeOrder" />
+                <ScalarProperty Name="NodeGUID" ColumnName="NodeGUID" />
+                <ScalarProperty Name="NodeSiteID" ColumnName="NodeSiteID" />
+                <ScalarProperty Name="NodeACLID" ColumnName="NodeACLID" />
+                <ScalarProperty Name="NodeLevel" ColumnName="NodeLevel" />
+                <ScalarProperty Name="NodeParentID" ColumnName="NodeParentID" />
+                <ScalarProperty Name="NodeClassID" ColumnName="NodeClassID" />
+                <ScalarProperty Name="NodeAlias" ColumnName="NodeAlias" />
+                <ScalarProperty Name="NodeName" ColumnName="NodeName" />
+                <ScalarProperty Name="NodeAliasPath" ColumnName="NodeAliasPath" />
+                <ScalarProperty Name="NodeID" ColumnName="NodeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_Class">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_Class">
+              <MappingFragment StoreEntitySet="CMS_Class">
+                <ScalarProperty Name="ClassPageTemplateCategoryID" ColumnName="ClassPageTemplateCategoryID" />
+                <ScalarProperty Name="ClassIsProductSection" ColumnName="ClassIsProductSection" />
+                <ScalarProperty Name="ClassConnectionString" ColumnName="ClassConnectionString" />
+                <ScalarProperty Name="ClassSKUDefaultProductType" ColumnName="ClassSKUDefaultProductType" />
+                <ScalarProperty Name="ClassContactOverwriteEnabled" ColumnName="ClassContactOverwriteEnabled" />
+                <ScalarProperty Name="ClassContactMapping" ColumnName="ClassContactMapping" />
+                <ScalarProperty Name="ClassSKUDefaultDepartmentID" ColumnName="ClassSKUDefaultDepartmentID" />
+                <ScalarProperty Name="ClassSKUDefaultDepartmentName" ColumnName="ClassSKUDefaultDepartmentName" />
+                <ScalarProperty Name="ClassSearchEnabled" ColumnName="ClassSearchEnabled" />
+                <ScalarProperty Name="ClassInheritsFromClassID" ColumnName="ClassInheritsFromClassID" />
+                <ScalarProperty Name="ClassSearchSettings" ColumnName="ClassSearchSettings" />
+                <ScalarProperty Name="ClassSearchCreationDateColumn" ColumnName="ClassSearchCreationDateColumn" />
+                <ScalarProperty Name="ClassSearchImageColumn" ColumnName="ClassSearchImageColumn" />
+                <ScalarProperty Name="ClassSearchContentColumn" ColumnName="ClassSearchContentColumn" />
+                <ScalarProperty Name="ClassSearchTitleColumn" ColumnName="ClassSearchTitleColumn" />
+                <ScalarProperty Name="ClassLoadGeneration" ColumnName="ClassLoadGeneration" />
+                <ScalarProperty Name="ClassShowColumns" ColumnName="ClassShowColumns" />
+                <ScalarProperty Name="ClassIsCustomTable" ColumnName="ClassIsCustomTable" />
+                <ScalarProperty Name="ClassIsProduct" ColumnName="ClassIsProduct" />
+                <ScalarProperty Name="ClassCreateSKU" ColumnName="ClassCreateSKU" />
+                <ScalarProperty Name="ClassGUID" ColumnName="ClassGUID" />
+                <ScalarProperty Name="ClassLastModified" ColumnName="ClassLastModified" />
+                <ScalarProperty Name="ClassDefaultPageTemplateID" ColumnName="ClassDefaultPageTemplateID" />
+                <ScalarProperty Name="ClassNodeAliasSource" ColumnName="ClassNodeAliasSource" />
+                <ScalarProperty Name="ClassIsMenuItemType" ColumnName="ClassIsMenuItemType" />
+                <ScalarProperty Name="ClassSKUMappings" ColumnName="ClassSKUMappings" />
+                <ScalarProperty Name="ClassShowTemplateSelection" ColumnName="ClassShowTemplateSelection" />
+                <ScalarProperty Name="ClassUsePublishFromTo" ColumnName="ClassUsePublishFromTo" />
+                <ScalarProperty Name="ClassShowAsSystemTable" ColumnName="ClassShowAsSystemTable" />
+                <ScalarProperty Name="ClassNewPageUrl" ColumnName="ClassNewPageUrl" />
+                <ScalarProperty Name="ClassFormLayout" ColumnName="ClassFormLayout" />
+                <ScalarProperty Name="ClassPreviewPageUrl" ColumnName="ClassPreviewPageUrl" />
+                <ScalarProperty Name="ClassViewPageUrl" ColumnName="ClassViewPageUrl" />
+                <ScalarProperty Name="ClassTableName" ColumnName="ClassTableName" />
+                <ScalarProperty Name="ClassNodeNameSource" ColumnName="ClassNodeNameSource" />
+                <ScalarProperty Name="ClassListPageUrl" ColumnName="ClassListPageUrl" />
+                <ScalarProperty Name="ClassEditingPageUrl" ColumnName="ClassEditingPageUrl" />
+                <ScalarProperty Name="ClassFormDefinition" ColumnName="ClassFormDefinition" />
+                <ScalarProperty Name="ClassXmlSchema" ColumnName="ClassXmlSchema" />
+                <ScalarProperty Name="ClassIsCoupledClass" ColumnName="ClassIsCoupledClass" />
+                <ScalarProperty Name="ClassIsDocumentType" ColumnName="ClassIsDocumentType" />
+                <ScalarProperty Name="ClassUsesVersioning" ColumnName="ClassUsesVersioning" />
+                <ScalarProperty Name="ClassName" ColumnName="ClassName" />
+                <ScalarProperty Name="ClassDisplayName" ColumnName="ClassDisplayName" />
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_User">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_User">
+              <MappingFragment StoreEntitySet="CMS_User">
+                <ScalarProperty Name="UserSiteManagerDisabled" ColumnName="UserSiteManagerDisabled" />
+                <ScalarProperty Name="UserHasAllowedCultures" ColumnName="UserHasAllowedCultures" />
+                <ScalarProperty Name="UserIsDomain" ColumnName="UserIsDomain" />
+                <ScalarProperty Name="UserVisibility" ColumnName="UserVisibility" />
+                <ScalarProperty Name="UserIsHidden" ColumnName="UserIsHidden" />
+                <ScalarProperty Name="UserLastLogonInfo" ColumnName="UserLastLogonInfo" />
+                <ScalarProperty Name="UserLastModified" ColumnName="UserLastModified" />
+                <ScalarProperty Name="UserGUID" ColumnName="UserGUID" />
+                <ScalarProperty Name="UserStartingAliasPath" ColumnName="UserStartingAliasPath" />
+                <ScalarProperty Name="LastLogon" ColumnName="LastLogon" />
+                <ScalarProperty Name="UserCreated" ColumnName="UserCreated" />
+                <ScalarProperty Name="UserPasswordFormat" ColumnName="UserPasswordFormat" />
+                <ScalarProperty Name="UserIsExternal" ColumnName="UserIsExternal" />
+                <ScalarProperty Name="UserIsGlobalAdministrator" ColumnName="UserIsGlobalAdministrator" />
+                <ScalarProperty Name="UserIsEditor" ColumnName="UserIsEditor" />
+                <ScalarProperty Name="UserEnabled" ColumnName="UserEnabled" />
+                <ScalarProperty Name="PreferredUICultureCode" ColumnName="PreferredUICultureCode" />
+                <ScalarProperty Name="PreferredCultureCode" ColumnName="PreferredCultureCode" />
+                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_UserRole">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_UserRole">
+              <MappingFragment StoreEntitySet="CMS_UserRole">
+                <ScalarProperty Name="UserRoleID" ColumnName="UserRoleID" />
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_UserSettings">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_UserSettings">
+              <MappingFragment StoreEntitySet="CMS_UserSettings">
+                <ScalarProperty Name="UserPasswordLastChanged" ColumnName="UserPasswordLastChanged" />
+                <ScalarProperty Name="UserAccountLockReason" ColumnName="UserAccountLockReason" />
+                <ScalarProperty Name="UserAvatarType" ColumnName="UserAvatarType" />
+                <ScalarProperty Name="UserInvalidLogOnAttemptsHash" ColumnName="UserInvalidLogOnAttemptsHash" />
+                <ScalarProperty Name="UserInvalidLogOnAttempts" ColumnName="UserInvalidLogOnAttempts" />
+                <ScalarProperty Name="UserWebPartToolbarPosition" ColumnName="UserWebPartToolbarPosition" />
+                <ScalarProperty Name="UserWebPartToolbarEnabled" ColumnName="UserWebPartToolbarEnabled" />
+                <ScalarProperty Name="UserPasswordRequestHash" ColumnName="UserPasswordRequestHash" />
+                <ScalarProperty Name="UserLogActivities" ColumnName="UserLogActivities" />
+                <ScalarProperty Name="UserLinkedInID" ColumnName="UserLinkedInID" />
+                <ScalarProperty Name="UserBounces" ColumnName="UserBounces" />
+                <ScalarProperty Name="UserPosition" ColumnName="UserPosition" />
+                <ScalarProperty Name="UserPhone" ColumnName="UserPhone" />
+                <ScalarProperty Name="UserIM" ColumnName="UserIM" />
+                <ScalarProperty Name="UserSkype" ColumnName="UserSkype" />
+                <ScalarProperty Name="UserAuthenticationGUID" ColumnName="UserAuthenticationGUID" />
+                <ScalarProperty Name="UserFacebookID" ColumnName="UserFacebookID" />
+                <ScalarProperty Name="UserUsedWidgets" ColumnName="UserUsedWidgets" />
+                <ScalarProperty Name="UserUsedWebParts" ColumnName="UserUsedWebParts" />
+                <ScalarProperty Name="UserDescription" ColumnName="UserDescription" />
+                <ScalarProperty Name="UserDialogsConfiguration" ColumnName="UserDialogsConfiguration" />
+                <ScalarProperty Name="UserWaitingForApproval" ColumnName="UserWaitingForApproval" />
+                <ScalarProperty Name="UserBlogPosts" ColumnName="UserBlogPosts" />
+                <ScalarProperty Name="WindowsLiveID" ColumnName="WindowsLiveID" />
+                <ScalarProperty Name="UserSettingsUserID" ColumnName="UserSettingsUserID" />
+                <ScalarProperty Name="UserSettingsUserGUID" ColumnName="UserSettingsUserGUID" />
+                <ScalarProperty Name="UserMessageBoardPosts" ColumnName="UserMessageBoardPosts" />
+                <ScalarProperty Name="UserDateOfBirth" ColumnName="UserDateOfBirth" />
+                <ScalarProperty Name="UserGender" ColumnName="UserGender" />
+                <ScalarProperty Name="UserBlogComments" ColumnName="UserBlogComments" />
+                <ScalarProperty Name="UserForumPosts" ColumnName="UserForumPosts" />
+                <ScalarProperty Name="UserActivityPoints" ColumnName="UserActivityPoints" />
+                <ScalarProperty Name="UserShowSplashScreen" ColumnName="UserShowSplashScreen" />
+                <ScalarProperty Name="UserBadgeID" ColumnName="UserBadgeID" />
+                <ScalarProperty Name="UserAvatarID" ColumnName="UserAvatarID" />
+                <ScalarProperty Name="UserTimeZoneID" ColumnName="UserTimeZoneID" />
+                <ScalarProperty Name="UserActivatedByUserID" ColumnName="UserActivatedByUserID" />
+                <ScalarProperty Name="UserActivationDate" ColumnName="UserActivationDate" />
+                <ScalarProperty Name="UserPreferences" ColumnName="UserPreferences" />
+                <ScalarProperty Name="UserRegistrationInfo" ColumnName="UserRegistrationInfo" />
+                <ScalarProperty Name="UserCustomData" ColumnName="UserCustomData" />
+                <ScalarProperty Name="UserMessagingNotificationEmail" ColumnName="UserMessagingNotificationEmail" />
+                <ScalarProperty Name="UserCampaign" ColumnName="UserCampaign" />
+                <ScalarProperty Name="UserURLReferrer" ColumnName="UserURLReferrer" />
+                <ScalarProperty Name="UserSignature" ColumnName="UserSignature" />
+                <ScalarProperty Name="UserPicture" ColumnName="UserPicture" />
+                <ScalarProperty Name="UserNickName" ColumnName="UserNickName" />
+                <ScalarProperty Name="UserSettingsID" ColumnName="UserSettingsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CMS_UserSite">
+            <EntityTypeMapping TypeName="kenticofreeModel.CMS_UserSite">
+              <MappingFragment StoreEntitySet="CMS_UserSite">
+                <ScalarProperty Name="UserDiscountLevelID" ColumnName="UserDiscountLevelID" />
+                <ScalarProperty Name="UserPreferredPaymentOptionID" ColumnName="UserPreferredPaymentOptionID" />
+                <ScalarProperty Name="UserPreferredShippingOptionID" ColumnName="UserPreferredShippingOptionID" />
+                <ScalarProperty Name="UserPreferredCurrencyID" ColumnName="UserPreferredCurrencyID" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserSiteID" ColumnName="UserSiteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -966,7 +1968,7 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="BlogPosts" ZoomLevel="53">
+      <Diagram Name="BlogPosts" ZoomLevel="52">
         <EntityTypeShape EntityType="kenticofreeModel.Blog_Comment" Width="1.5" PointX="5.25" PointY="4.25" Height="3.7109993489583317" IsExpanded="true" />
         <EntityTypeShape EntityType="kenticofreeModel.CMS_Attachment" Width="1.5" PointX="5.25" PointY="8.75" Height="5.2494108072916674" IsExpanded="true" />
         <EntityTypeShape EntityType="kenticofreeModel.CMS_Document" Width="1.5" PointX="3" PointY="1.625" Height="17.172099609375" IsExpanded="true" />
@@ -976,8 +1978,8 @@
         <EntityTypeShape EntityType="kenticofreeModel.CMS_TagGroup" Width="1.5" PointX="0.75" PointY="8.75" Height="2.9417936197916674" IsExpanded="true" />
         <EntityTypeShape EntityType="kenticofreeModel.CONTENT_BlogPost" Width="1.5" PointX="9.75" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
         <AssociationConnector Association="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="6.1054996744791659" />
-          <ConnectorPoint PointX="5.25" PointY="6.1054996744791659" />
+          <ConnectorPoint PointX="4.5" PointY="6.2403283227470414" />
+          <ConnectorPoint PointX="5.25" PointY="6.2403283227470414" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" ManuallyRouted="false">
           <ConnectorPoint PointX="4.5" PointY="11.374705403645834" />
@@ -999,14 +2001,83 @@
           <ConnectorPoint PointX="8.25" PointY="10.2112939453125" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.CMS_DocumentTag" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="17.6026416015625" />
-          <ConnectorPoint PointX="7.791666666666667" PointY="17.6026416015625" />
-          <ConnectorPoint PointX="7.958333333333333" PointY="17.6026416015625" />
-          <ConnectorPoint PointX="9" PointY="17.6026416015625" />
-          <ConnectorPoint PointX="9" PointY="11.297587890625" />
+          <ConnectorPoint PointX="4.5" PointY="8.5478011067708337" />
+          <ConnectorPoint PointX="9.5" PointY="8.5478011067708337" />
+          <ConnectorPoint PointX="9.5" PointY="9.125" />
         </AssociationConnector>
         <EntityTypeShape EntityType="kenticofreeModel.CONTENT_Blog" Width="1.5" PointX="10.375" PointY="5.75" Height="4.4802050781250031" />
         <EntityTypeShape EntityType="kenticofreeModel.CONTENT_BlogMonth" Width="1.5" PointX="7.375" PointY="5.75" Height="1.5956835937499996" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_Tree" Width="1.5" PointX="10.375" PointY="11.75" Height="7.1724251302083317" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_Class" Width="1.5" PointX="8.125" PointY="12.25" Height="10.249248046875003" />
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Class_CMS_Class" >
+          <ConnectorPoint PointX="8.6569230769230767" PointY="22.499248046875003" />
+          <ConnectorPoint PointX="8.6569230769230767" PointY="22.749248046875003" />
+          <ConnectorPoint PointX="9.1034615384615378" PointY="22.749248046875003" />
+          <ConnectorPoint PointX="9.1034615384615378" PointY="22.499248046875003" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class" >
+          <ConnectorPoint PointX="9.625" PointY="15.778513997395834" />
+          <ConnectorPoint PointX="10.375" PointY="15.778513997395834" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_User" Width="1.5" PointX="0.75" PointY="6.5" Height="7.9416308593750031" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_UserRole" Width="1.5" PointX="3" PointY="2.125" Height="1.9802864583333388" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_UserSettings" Width="1.5" PointX="3" PointY="13.25" Height="10.633850911458339" />
+        <EntityTypeShape EntityType="kenticofreeModel.CMS_UserSite" Width="1.5" PointX="3" PointY="4.875" Height="2.5571907552083388" />
+        <AssociationConnector Association="kenticofreeModel.FK_Blog_Comment_CommentApprovedByUserID_CMS_User" >
+          <ConnectorPoint PointX="1.5" PointY="6.5" />
+          <ConnectorPoint PointX="1.5" PointY="1.375" />
+          <ConnectorPoint PointX="1.8229186666666666" PointY="1.3749999999999993" />
+          <ConnectorPoint PointX="1.9895853333333331" PointY="1.375" />
+          <ConnectorPoint PointX="5.5104146666666667" PointY="1.3749999999999993" />
+          <ConnectorPoint PointX="5.6770813333333328" PointY="1.375" />
+          <ConnectorPoint PointX="6" PointY="1.375" />
+          <ConnectorPoint PointX="6" PointY="4.25" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_Blog_Comment_CommentUserID_CMS_User" >
+          <ConnectorPoint PointX="1.9062519999999998" PointY="6.5" />
+          <ConnectorPoint PointX="1.9062519999999998" PointY="1.125" />
+          <ConnectorPoint PointX="5.593748" PointY="1.125" />
+          <ConnectorPoint PointX="5.593748" PointY="4.25" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="12.393763834635418" />
+          <ConnectorPoint PointX="3" PointY="12.393763834635418" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="8.2979484049479169" />
+          <ConnectorPoint PointX="3" PointY="8.2979484049479169" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="11.307330322265626" />
+          <ConnectorPoint PointX="3" PointY="11.307330322265626" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User" >
+          <ConnectorPoint PointX="1.5" PointY="14.441630859375003" />
+          <ConnectorPoint PointX="1.5" PointY="24.133850911458339" />
+          <ConnectorPoint PointX="11.125" PointY="24.133850911458339" />
+          <ConnectorPoint PointX="11.125" PointY="19.307027994791667" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_UserRole_UserID_CMS_User" >
+          <ConnectorPoint PointX="1.0937475" PointY="6.5" />
+          <ConnectorPoint PointX="1.0937475" PointY="3.1151432291666694" />
+          <ConnectorPoint PointX="1.4166666666666667" PointY="3.115143229166669" />
+          <ConnectorPoint PointX="1.5833333333333333" PointY="3.1151432291666694" />
+          <ConnectorPoint PointX="1.8229186666666666" PointY="3.115143229166669" />
+          <ConnectorPoint PointX="1.9895853333333331" PointY="3.1151432291666694" />
+          <ConnectorPoint PointX="3" PointY="3.1151432291666694" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_UserSettings_UserActivatedByUserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="13.845815429687502" />
+          <ConnectorPoint PointX="3" PointY="13.845815429687502" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_UserSettings_UserSettingsUserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="13.485407714843751" />
+          <ConnectorPoint PointX="3" PointY="13.485407714843751" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User" >
+          <ConnectorPoint PointX="2.25" PointY="6.9660953776041694" />
+          <ConnectorPoint PointX="3" PointY="6.9660953776041694" />
+        </AssociationConnector>
       </Diagram>
     </Diagrams>
   </Designer>
