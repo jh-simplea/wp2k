@@ -55,9 +55,17 @@
             <End Role="CMS_User" EntitySet="CMS_User" />
             <End Role="CMS_Document" EntitySet="CMS_Document" />
           </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentNodeID_CMS_Tree" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
           <AssociationSet Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" Association="kenticofreeModel.Store.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
             <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
             <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree" Association="kenticofreeModel.Store.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_DocumentAlias" EntitySet="CMS_DocumentAlias" />
           </AssociationSet>
           <AssociationSet Name="FK_CMS_DocumentCategory_DocumentID_CMS_Document" Association="kenticofreeModel.Store.FK_CMS_DocumentCategory_DocumentID_CMS_Document">
             <End Role="CMS_Document" EntitySet="CMS_Document" />
@@ -75,9 +83,17 @@
             <End Role="CMS_TagGroup" EntitySet="CMS_TagGroup" />
             <End Role="CMS_Tag" EntitySet="CMS_Tag" />
           </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_CMS_Tree" Association="kenticofreeModel.Store.FK_CMS_Tree_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Tree1" EntitySet="CMS_Tree" />
+          </AssociationSet>
           <AssociationSet Name="FK_CMS_Tree_NodeClassID_CMS_Class" Association="kenticofreeModel.Store.FK_CMS_Tree_NodeClassID_CMS_Class">
             <End Role="CMS_Class" EntitySet="CMS_Class" />
             <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree" Association="kenticofreeModel.Store.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Tree1" EntitySet="CMS_Tree" />
           </AssociationSet>
           <AssociationSet Name="FK_CMS_Tree_NodeOwner_CMS_User" Association="kenticofreeModel.Store.FK_CMS_Tree_NodeOwner_CMS_User">
             <End Role="CMS_User" EntitySet="CMS_User" />
@@ -619,6 +635,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CMS_Document_DocumentNodeID_CMS_Tree">
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="1" />
+          <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentNodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup">
           <End Role="CMS_TagGroup" Type="kenticofreeModel.Store.CMS_TagGroup" Multiplicity="0..1" />
           <End Role="CMS_Document" Type="kenticofreeModel.Store.CMS_Document" Multiplicity="*" />
@@ -628,6 +656,18 @@
             </Principal>
             <Dependent Role="CMS_Document">
               <PropertyRef Name="DocumentTagGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree">
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="1" />
+          <End Role="CMS_DocumentAlias" Type="kenticofreeModel.Store.CMS_DocumentAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentAlias">
+              <PropertyRef Name="AliasNodeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -679,6 +719,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CMS_Tree_CMS_Tree">
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="1" />
+          <End Role="CMS_Tree1" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Tree1">
+              <PropertyRef Name="NodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CMS_Tree_NodeClassID_CMS_Class">
           <End Role="CMS_Class" Type="kenticofreeModel.Store.CMS_Class" Multiplicity="1" />
           <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="*" />
@@ -688,6 +740,18 @@
             </Principal>
             <Dependent Role="CMS_Tree">
               <PropertyRef Name="NodeClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree">
+          <End Role="CMS_Tree" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="0..1" />
+          <End Role="CMS_Tree1" Type="kenticofreeModel.Store.CMS_Tree" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Tree1">
+              <PropertyRef Name="NodeLinkedNodeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -844,6 +908,22 @@
             <End Role="CMS_User" EntitySet="CMS_User" />
             <End Role="CMS_UserSite" EntitySet="CMS_UserSite" />
           </AssociationSet>
+          <AssociationSet Name="FK_CMS_Document_DocumentNodeID_CMS_Tree" Association="kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Document" EntitySet="CMS_Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree" Association="kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_DocumentAlias" EntitySet="CMS_DocumentAlias" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_CMS_Tree" Association="kenticofreeModel.FK_CMS_Tree_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Tree1" EntitySet="CMS_Tree" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree" Association="kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree">
+            <End Role="CMS_Tree" EntitySet="CMS_Tree" />
+            <End Role="CMS_Tree1" EntitySet="CMS_Tree" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Blog_Comment">
           <Key>
@@ -984,6 +1064,7 @@
           <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
           <NavigationProperty Name="CMS_User1" Relationship="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
           <NavigationProperty Name="CMS_User2" Relationship="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User" FromRole="CMS_Document" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_Tree" Relationship="kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree" FromRole="CMS_Document" ToRole="CMS_Tree" />
         </EntityType>
         <EntityType Name="CMS_DocumentAlias">
           <Key>
@@ -1001,6 +1082,7 @@
           <Property Name="AliasLastModified" Type="DateTime" Nullable="false" />
           <Property Name="AliasSiteID" Type="Int32" Nullable="false" />
           <Property Name="AliasActionMode" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="CMS_Tree" Relationship="kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree" FromRole="CMS_DocumentAlias" ToRole="CMS_Tree" />
         </EntityType>
         <EntityType Name="CMS_DocumentCategory">
           <Key>
@@ -1187,6 +1269,12 @@
           <Property Type="Boolean" Name="NodeAllowCacheInFileSystem" />
           <NavigationProperty Name="CMS_Class" Relationship="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class" FromRole="CMS_Tree" ToRole="CMS_Class" />
           <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User" FromRole="CMS_Tree" ToRole="CMS_User" />
+          <NavigationProperty Name="CMS_Document" Relationship="kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree" FromRole="CMS_Tree" ToRole="CMS_Document" />
+          <NavigationProperty Name="CMS_DocumentAlias" Relationship="kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree" FromRole="CMS_Tree" ToRole="CMS_DocumentAlias" />
+          <NavigationProperty Name="CMS_Tree1" Relationship="kenticofreeModel.FK_CMS_Tree_CMS_Tree" FromRole="CMS_Tree" ToRole="CMS_Tree1" />
+          <NavigationProperty Name="CMS_Tree2" Relationship="kenticofreeModel.FK_CMS_Tree_CMS_Tree" FromRole="CMS_Tree1" ToRole="CMS_Tree" />
+          <NavigationProperty Name="CMS_Tree11" Relationship="kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree" FromRole="CMS_Tree" ToRole="CMS_Tree1" />
+          <NavigationProperty Name="CMS_Tree3" Relationship="kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree" FromRole="CMS_Tree1" ToRole="CMS_Tree" />
         </EntityType>
         <EntityType Name="CMS_Class">
           <Key>
@@ -1501,6 +1589,54 @@
             </Principal>
             <Dependent Role="CMS_UserSite">
               <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Document_DocumentNodeID_CMS_Tree">
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_Document" Role="CMS_Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Document">
+              <PropertyRef Name="DocumentNodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree">
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_DocumentAlias" Role="CMS_DocumentAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_DocumentAlias">
+              <PropertyRef Name="AliasNodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_CMS_Tree">
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="1" />
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Tree1">
+              <PropertyRef Name="NodeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree">
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree" Multiplicity="0..1" />
+          <End Type="kenticofreeModel.CMS_Tree" Role="CMS_Tree1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CMS_Tree">
+              <PropertyRef Name="NodeID" />
+            </Principal>
+            <Dependent Role="CMS_Tree1">
+              <PropertyRef Name="NodeLinkedNodeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1978,16 +2114,18 @@
         <EntityTypeShape EntityType="kenticofreeModel.CMS_TagGroup" Width="1.5" PointX="0.75" PointY="8.75" Height="2.9417936197916674" IsExpanded="true" />
         <EntityTypeShape EntityType="kenticofreeModel.CONTENT_BlogPost" Width="1.5" PointX="9.75" PointY="0.75" Height="3.3263964843749996" IsExpanded="true" />
         <AssociationConnector Association="kenticofreeModel.FK_Blog_Comment_CommentPostDocumentID_CMS_Document" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="6.2403283227470414" />
-          <ConnectorPoint PointX="5.25" PointY="6.2403283227470414" />
+          <ConnectorPoint PointX="4.5" PointY="6.2978011067708328" />
+          <ConnectorPoint PointX="4.791666666666667" PointY="6.2978011067708319" />
+          <ConnectorPoint PointX="4.958333333333333" PointY="6.2978011067708328" />
+          <ConnectorPoint PointX="5.25" PointY="6.2978011067708328" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document" ManuallyRouted="false">
           <ConnectorPoint PointX="4.5" PointY="11.374705403645834" />
           <ConnectorPoint PointX="5.25" PointY="11.374705403645834" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup" ManuallyRouted="false">
-          <ConnectorPoint PointX="2.25" PointY="10.220896809895834" />
-          <ConnectorPoint PointX="3" PointY="10.220896809895834" />
+          <ConnectorPoint PointX="2.25" PointY="10.038286437988283" />
+          <ConnectorPoint PointX="3" PointY="10.038286437988283" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document" ManuallyRouted="false">
           <ConnectorPoint PointX="4.5" PointY="15.547841796875" />
@@ -1996,12 +2134,16 @@
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Tag_TagGroupID_CMS_TagGroup" ManuallyRouted="false">
           <ConnectorPoint PointX="1.5" PointY="11.691793619791667" />
           <ConnectorPoint PointX="1.5" PointY="19.047099609375" />
+          <ConnectorPoint PointX="1.7916661666666667" PointY="19.047099609375" />
+          <ConnectorPoint PointX="1.9583328333333332" PointY="19.047099609375" />
           <ConnectorPoint PointX="7.875" PointY="19.047099609375" />
           <ConnectorPoint PointX="7.875" PointY="10.2112939453125" />
           <ConnectorPoint PointX="8.25" PointY="10.2112939453125" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.CMS_DocumentTag" ManuallyRouted="false">
           <ConnectorPoint PointX="4.5" PointY="8.5478011067708337" />
+          <ConnectorPoint PointX="6.916666666666667" PointY="8.5478011067708337" />
+          <ConnectorPoint PointX="7.083333333333333" PointY="8.5478011067708337" />
           <ConnectorPoint PointX="9.5" PointY="8.5478011067708337" />
           <ConnectorPoint PointX="9.5" PointY="9.125" />
         </AssociationConnector>
@@ -2016,8 +2158,8 @@
           <ConnectorPoint PointX="9.1034615384615378" PointY="22.499248046875003" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_NodeClassID_CMS_Class" >
-          <ConnectorPoint PointX="9.625" PointY="15.778513997395834" />
-          <ConnectorPoint PointX="10.375" PointY="15.778513997395834" />
+          <ConnectorPoint PointX="9.625" PointY="16.355418294270834" />
+          <ConnectorPoint PointX="10.375" PointY="16.355418294270834" />
         </AssociationConnector>
         <EntityTypeShape EntityType="kenticofreeModel.CMS_User" Width="1.5" PointX="0.75" PointY="6.5" Height="7.9416308593750031" />
         <EntityTypeShape EntityType="kenticofreeModel.CMS_UserRole" Width="1.5" PointX="3" PointY="2.125" Height="1.9802864583333388" />
@@ -2040,22 +2182,22 @@
           <ConnectorPoint PointX="5.593748" PointY="4.25" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentCheckedOutByUserID_CMS_User" >
-          <ConnectorPoint PointX="2.25" PointY="12.393763834635418" />
-          <ConnectorPoint PointX="3" PointY="12.393763834635418" />
+          <ConnectorPoint PointX="2.25" PointY="12.468490295410158" />
+          <ConnectorPoint PointX="3" PointY="12.468490295410158" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentCreatedByUserID_CMS_User" >
-          <ConnectorPoint PointX="2.25" PointY="8.2979484049479169" />
-          <ConnectorPoint PointX="3" PointY="8.2979484049479169" />
+          <ConnectorPoint PointX="2.25" PointY="8.5021909077962263" />
+          <ConnectorPoint PointX="3" PointY="8.5021909077962263" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentModifiedByUserID_CMS_User" >
-          <ConnectorPoint PointX="2.25" PointY="11.307330322265626" />
-          <ConnectorPoint PointX="3" PointY="11.307330322265626" />
+          <ConnectorPoint PointX="2.25" PointY="11.25338836669922" />
+          <ConnectorPoint PointX="3" PointY="11.25338836669922" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User" >
-          <ConnectorPoint PointX="1.5" PointY="14.441630859375003" />
-          <ConnectorPoint PointX="1.5" PointY="24.133850911458339" />
+          <ConnectorPoint PointX="1.8749995" PointY="14.441630859375003" />
+          <ConnectorPoint PointX="1.8749995" PointY="24.133850911458339" />
           <ConnectorPoint PointX="11.125" PointY="24.133850911458339" />
-          <ConnectorPoint PointX="11.125" PointY="19.307027994791667" />
+          <ConnectorPoint PointX="11.125" PointY="20.460836588541667" />
         </AssociationConnector>
         <AssociationConnector Association="kenticofreeModel.FK_CMS_UserRole_UserID_CMS_User" >
           <ConnectorPoint PointX="1.0937475" PointY="6.5" />
@@ -2077,6 +2219,42 @@
         <AssociationConnector Association="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User" >
           <ConnectorPoint PointX="2.25" PointY="6.9660953776041694" />
           <ConnectorPoint PointX="3" PointY="6.9660953776041694" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree" >
+          <ConnectorPoint PointX="11.125" PointY="11.75" />
+          <ConnectorPoint PointX="11.125" PointY="11.547587890625" />
+          <ConnectorPoint PointX="10.802081333333334" PointY="11.547587890625" />
+          <ConnectorPoint PointX="10.635414666666666" PointY="11.547587890625" />
+          <ConnectorPoint PointX="7.958333333333333" PointY="11.547587890625" />
+          <ConnectorPoint PointX="7.791666666666667" PointY="11.547587890625" />
+          <ConnectorPoint PointX="7" PointY="11.547587890625" />
+          <ConnectorPoint PointX="7" PointY="8.4375" />
+          <ConnectorPoint PointX="4.875" PointY="8.4375" />
+          <ConnectorPoint PointX="4.875" PointY="3.9301485533854228" />
+          <ConnectorPoint PointX="4.5" PointY="3.9301485533854228" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree" >
+          <ConnectorPoint PointX="10.718748" PointY="11.75" />
+          <ConnectorPoint PointX="10.718748" PointY="10.480205078125003" />
+          <ConnectorPoint PointX="10.125" PointY="10.480205078125003" />
+          <ConnectorPoint PointX="10.125" PointY="4.326396484375" />
+          <ConnectorPoint PointX="9.5" PointY="4.326396484375" />
+          <ConnectorPoint PointX="9.5" PointY="2.5093489583333328" />
+          <ConnectorPoint PointX="9.25" PointY="2.5093489583333328" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_CMS_Tree" >
+          <ConnectorPoint PointX="11.875" PointY="14.722513922275642" />
+          <ConnectorPoint PointX="12.125" PointY="14.722513922275642" />
+          <ConnectorPoint PointX="12.125" PointY="17.554175255408655" />
+          <ConnectorPoint PointX="11.875" PointY="17.554175255408655" />
+        </AssociationConnector>
+        <AssociationConnector Association="kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree" >
+          <ConnectorPoint PointX="10.906923076923077" PointY="20.460836588541667" />
+          <ConnectorPoint PointX="10.906923076923077" PointY="20.710836588541667" />
+          <ConnectorPoint PointX="11.041666666666666" PointY="20.710836588541667" />
+          <ConnectorPoint PointX="11.208333333333334" PointY="20.710836588541667" />
+          <ConnectorPoint PointX="11.353461538461538" PointY="20.710836588541667" />
+          <ConnectorPoint PointX="11.353461538461538" PointY="20.460836588541667" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

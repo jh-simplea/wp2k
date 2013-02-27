@@ -7,16 +7,13 @@ using System.Configuration;
 using System.Xml.Linq;
 using System.Collections.Specialized;
 using System.Transactions;
+using System.Text.RegularExpressions;
 
 namespace wp2k {
 	class Program {
-		static void Main(string[] args) {
-			/*
-			 * Note: This whole thing currently assumes the blog is a first child under the root node,
-			 * putting entries at NodeLevel 3.
-			 */
-			// TODO: God functions are evil.
+		protected static string forbiddenChars = "[^0-9a-zA-Z_-]"; // Anything that's not alphanumeric, underscore, or dash
 
+		static void Main(string[] args) {
 			// Read config file.
 			AppSettingsReader reader = new AppSettingsReader();
 			NameValueCollection config = ConfigurationManager.AppSettings;
@@ -26,6 +23,8 @@ namespace wp2k {
 			XNamespace wpns = "http://wordpress.org/export/1.1/";
 			XNamespace encoded = "http://purl.org/rss/1.0/modules/content/";
 
+			Regex forbidden = new Regex(forbiddenChars);
+
 			using (kenticofreeEntities context = new kenticofreeEntities()) {
 				var blogId = Int32.Parse(config.Get("kenticoBlogId"));
 				var siteId = Int32.Parse(config.Get("siteId"));
@@ -33,6 +32,7 @@ namespace wp2k {
 
 				// Gather list of Posts and make them each Entities
 				var items = (from i in wpxml.Descendants("item")
+							 where i.Element(wpns + "post_type").Value == "post" && i.Element(wpns + "status").Value == "publish"
 							 select new CONTENT_BlogPost {
 								 BlogPostID = Int32.Parse(i.Element(wpns + "post_id").Value),
 								 BlogPostTitle = i.Element("title").Value,
@@ -47,9 +47,9 @@ namespace wp2k {
 				CMS_Tree blog = (from b in context.CONTENT_Blog
 								 join d in context.CMS_Document on b.BlogID equals d.DocumentForeignKeyValue
 								 join t in context.CMS_Tree on d.DocumentNodeID equals t.NodeID
-									 where b.BlogID == blogId
+									 where b.BlogID == blogId && t.NodeClassID == 3423 //Blog class ID, otherwise we end up with a bunch of stuff that aren't blogs
 									 select t).First();
-
+				
 				foreach (CONTENT_BlogPost post in items) {
 					/* We want to preserve the IDs of the Posts, but EF won't let us turn on IDENTITY_INSERT
 					 * with its available methods (ExecuteStoreCommand and SaveChanges are different connections, it seems). 
@@ -84,29 +84,30 @@ namespace wp2k {
 					context.ExecuteStoreCommand(cmd, values);
 
 					// See if there's a BlogMonth entry for the month this post is for
-					CMS_Tree month = GetBlogMonth(context, post, blog, nodeOwnerId, siteId);
+					CMS_Tree month = GetBlogMonth(context, post, blog, config);
 
 					CMS_Class blogClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogPost").First();
 
 					CMS_Tree treeNode = (from t in context.CMS_Tree
 										 join d in context.CMS_Document on t.NodeID equals d.DocumentNodeID
-										 where d.DocumentForeignKeyValue = post.BlogPostID
-										 select t).First();
+										 where d.DocumentForeignKeyValue == post.BlogPostID && t.NodeClassID == 3423
+										 select t).FirstOrDefault();
 
 					// Add a new node only if one doesn't already exist
 					if (treeNode == null) {
 						// Create the Tree Node for the post and add it in
 						treeNode = new CMS_Tree() {
-							NodeAliasPath = string.Format("/{0}/{1}/{2}", blog.NodeName, month.NodeName, post.BlogPostTitle),
+							NodeAliasPath = string.Format("{0}/{1}", month.NodeAliasPath, forbidden.Replace(post.BlogPostTitle, "-")),
 							NodeName = post.BlogPostTitle,
-							NodeAlias = post.BlogPostTitle.Replace(" ", "-"),
+							NodeAlias = forbidden.Replace(post.BlogPostTitle, "-"),
 							NodeClassID = blogClass.ClassID,
 							NodeParentID = month.NodeID,
-							NodeLevel = 3,
-							NodeACLID = 2, // Default ACL ID
+							NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel"))+2,
+							NodeACLID = 1, // Default ACL ID
 							NodeSiteID = siteId,
 							NodeGUID = Guid.NewGuid(),
 							NodeOwner = nodeOwnerId,
+							NodeInheritPageLevels = "",
 							NodeTemplateForAllCultures = true
 						};
 						context.CMS_Tree.AddObject(treeNode);
@@ -119,24 +120,24 @@ namespace wp2k {
 					CMS_Document postDoc = AddDocument(context, treeNode, post.BlogPostID);
 
 					// Get the comments from the XML
-					var comments = (from c in wpxml.Descendants("item").Where(x => x.Element(wpns + "post_id").Value == post.BlogPostID.ToString()).Descendants(wpns + "comment")
-									select new Blog_Comment {
-										CommentID = Int32.Parse(c.Element(wpns + "comment_id").Value),
-										CommentUserName = c.Element(wpns + "comment_author").Value,
-										CommentEmail = c.Element(wpns + "comment_author_email").Value,
-										CommentUrl = c.Element(wpns + "comment_author_url").Value,
-										CommentApproved = Boolean.Parse(c.Element(wpns + "comment_approved").Value),
-										CommentDate = DateTime.Parse(c.Element(wpns + "comment_date").Value),
-										CommentText = c.Element(wpns + "comment_content").Value,
-										CommentIsTrackBack = Boolean.Parse(c.Element(wpns + "comment_type").Value),
-										CommentPostDocumentID = postDoc.DocumentID
-									}
-					);
+					//var comments = (from c in wpxml.Descendants("item").Where(x => x.Element(wpns + "post_id").Value == post.BlogPostID.ToString()).Descendants(wpns + "comment")
+					//                select new Blog_Comment {
+					//                    CommentID = Int32.Parse(c.Element(wpns + "comment_id").Value),
+					//                    CommentUserName = c.Element(wpns + "comment_author").Value,
+					//                    CommentEmail = c.Element(wpns + "comment_author_email").Value,
+					//                    CommentUrl = c.Element(wpns + "comment_author_url").Value,
+					//                    CommentApproved = (c.Element(wpns + "comment_approved").Value != "0"), // Convert "0"/"1" to false/true
+					//                    CommentDate = DateTime.Parse(c.Element(wpns + "comment_date").Value),
+					//                    CommentText = c.Element(wpns + "comment_content").Value,
+					//                    CommentIsTrackBack = !String.IsNullOrEmpty(c.Element(wpns + "comment_type").Value),
+					//                    CommentPostDocumentID = postDoc.DocumentID
+					//                }
+					//);
 
-					// Insert them into the database
-					foreach (Blog_Comment comment in comments) {
-						context.Blog_Comment.AddObject(comment);
-					}
+					//// Insert them into the database
+					//foreach (Blog_Comment comment in comments) {
+					//    context.Blog_Comment.AddObject(comment);
+					//}
 
 					context.SaveChanges();
 
@@ -146,7 +147,8 @@ namespace wp2k {
 			}
 		}
 
-		protected static CMS_Tree GetBlogMonth(kenticofreeEntities context, CONTENT_BlogPost post, CMS_Tree blog, int nodeOwnerId, int siteId) {
+		protected static CMS_Tree GetBlogMonth(kenticofreeEntities context, CONTENT_BlogPost post, CMS_Tree blog, NameValueCollection config) {
+			Regex forbidden = new Regex(forbiddenChars);
 			var monthQuery = (from m in context.CONTENT_BlogMonth
 							  where m.BlogMonthStartingDate.Year == post.BlogPostDate.Year && m.BlogMonthStartingDate.Month == post.BlogPostDate.Month
 							  select m);
@@ -163,20 +165,21 @@ namespace wp2k {
 				context.CONTENT_BlogMonth.AddObject(month);
 
 				CMS_Class monthClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogMonth").First();
-
+				
 				// Add the corresponding tree node
 				treeNode = new CMS_Tree() {
-					NodeAliasPath = string.Format("/{0}/{1}", blog.NodeName, month.BlogMonthName),
+					NodeAliasPath = string.Format("{0}/{1}/{2}", config.Get("kenticoBlogPath"), forbidden.Replace(blog.NodeName, "-"), forbidden.Replace(month.BlogMonthName, "-")),
 					NodeTemplateForAllCultures = true,
 					NodeName = month.BlogMonthName,
-					NodeAlias = month.BlogMonthName.Replace(" ", "-"),
+					NodeAlias = forbidden.Replace(month.BlogMonthName, "-"),
 					NodeClassID = monthClass.ClassID,
 					NodeParentID = blog.NodeID,
-					NodeLevel = 2,
-					NodeACLID = 2, // Default ACL ID
-					NodeSiteID = siteId,
+					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")) + 1,
+					NodeACLID = 1, // Default ACL ID
+					NodeSiteID = Int32.Parse(config.Get("siteId")),
 					NodeGUID = Guid.NewGuid(),
-					NodeOwner = nodeOwnerId,
+					NodeOwner = Int32.Parse(config.Get("nodeOwnerId")),
+					NodeInheritPageLevels = "",
 					NodeChildNodesCount = 0 // Start out with a number, instead of NULL, so we can easily increment it
 				};
 
@@ -188,11 +191,12 @@ namespace wp2k {
 				AddDocument(context, treeNode, month.BlogMonthID);
 			}
 			else {
+				CONTENT_BlogMonth month = monthQuery.First();
 				treeNode = (from t in context.CMS_Tree
 							join d in context.CMS_Document on t.NodeID equals d.DocumentNodeID
 							join b in context.CONTENT_BlogMonth on d.DocumentForeignKeyValue equals b.BlogMonthID
-								where b.BlogMonthID == monthQuery.First().BlogMonthID
-								select t).First();
+								where b.BlogMonthID == month.BlogMonthID
+								select t).Single();
 			}
 
 			return treeNode;
@@ -210,7 +214,15 @@ namespace wp2k {
 						DocumentUseNamePathForUrlPath = false,
 						DocumentStylesheetID = -1,
 						DocumentNodeID = treeNode.NodeID,
-						DocumentGUID = Guid.NewGuid()
+						DocumentGUID = Guid.NewGuid(),
+						DocumentWorkflowCycleGUID = Guid.NewGuid(),
+						DocumentCreatedByUserID = treeNode.NodeOwner,
+						DocumentCreatedWhen = DateTime.Now,
+						DocumentModifiedWhen = DateTime.Now,
+						DocumentModifiedByUserID = treeNode.NodeOwner,
+						DocumentUrlPath = "",
+						DocumentContent = "",
+						DocumentIsArchived = false
 					};
 
 					context.CMS_Document.AddObject(doc);

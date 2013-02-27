@@ -37,6 +37,10 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_UserSettings_UserActivatedByUserID_CMS_User", "CMS_User", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_User), "CMS_UserSettings", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_UserSettings), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_UserSettings_UserSettingsUserID_CMS_User", "CMS_User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_User), "CMS_UserSettings", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_UserSettings), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_UserSite_UserID_CMS_User", "CMS_User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_User), "CMS_UserSite", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_UserSite), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Tree), "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Document), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Tree), "CMS_DocumentAlias", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_DocumentAlias), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Tree_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Tree), "CMS_Tree1", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Tree), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Tree), "CMS_Tree1", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Tree), true)]
 
 #endregion
 
@@ -4971,6 +4975,44 @@ namespace wp2k
                 }
             }
         }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree")]
+        public CMS_Tree CMS_Tree
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_Tree> CMS_TreeReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree", value);
+                }
+            }
+        }
 
         #endregion
 
@@ -5301,6 +5343,48 @@ namespace wp2k
         #endregion
 
     
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree")]
+        public CMS_Tree CMS_Tree
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_Tree> CMS_TreeReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree", value);
+                }
+            }
+        }
+
+        #endregion
+
     }
     
     /// <summary>
@@ -6806,6 +6890,186 @@ namespace wp2k
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_User>("kenticofreeModel.FK_CMS_Tree_NodeOwner_CMS_User", "CMS_User", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Document")]
+        public EntityCollection<CMS_Document> CMS_Document
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_Document>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Document");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_Document>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Document", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_DocumentAlias")]
+        public EntityCollection<CMS_DocumentAlias> CMS_DocumentAlias
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_DocumentAlias>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_DocumentAlias");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_DocumentAlias>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_DocumentAlias", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Tree_CMS_Tree", "CMS_Tree1")]
+        public CMS_Tree CMS_Tree1
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree1").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree1").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_Tree> CMS_Tree1Reference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree1");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree1", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Tree_CMS_Tree", "CMS_Tree")]
+        public CMS_Tree CMS_Tree2
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_Tree> CMS_Tree2Reference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_CMS_Tree", "CMS_Tree", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree1")]
+        public EntityCollection<CMS_Tree> CMS_Tree11
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree1");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree1", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree")]
+        public CMS_Tree CMS_Tree3
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_Tree> CMS_Tree3Reference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree", value);
                 }
             }
         }
