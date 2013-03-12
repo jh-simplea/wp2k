@@ -22,7 +22,6 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_Blog_Comment_CommentPostDocumentID_CMS_Document", "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Document), "Blog_Comment", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.Blog_Comment), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Attachment_AttachmentDocumentID_CMS_Document", "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Document), "CMS_Attachment", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Attachment), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Document_DocumentTagGroupID_CMS_TagGroup", "CMS_TagGroup", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_TagGroup), "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Document), true)]
-[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Document), "CMS_DocumentCategory", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_DocumentCategory), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Tag_TagGroupID_CMS_TagGroup", "CMS_TagGroup", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_TagGroup), "CMS_Tag", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Tag), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "CMS_DocumentTag", "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Document), "CMS_Tag", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Tag))]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Class_CMS_Class", "CMS_Class", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Class), "CMS_Class1", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Class), true)]
@@ -41,6 +40,8 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Tree), "CMS_DocumentAlias", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_DocumentAlias), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Tree_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(wp2k.CMS_Tree), "CMS_Tree1", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Tree), true)]
 [assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Tree_NodeLinkedNodeID_CMS_Tree", "CMS_Tree", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_Tree), "CMS_Tree1", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Tree), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(wp2k.CMS_User), "CMS_Category", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Category), true)]
+[assembly: EdmRelationshipAttribute("kenticofreeModel", "CMS_DocumentCategory1", "CMS_Category", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Category), "CMS_Document", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(wp2k.CMS_Document))]
 
 #endregion
 
@@ -155,22 +156,6 @@ namespace wp2k
             }
         }
         private ObjectSet<CMS_DocumentAlias> _CMS_DocumentAlias;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        public ObjectSet<CMS_DocumentCategory> CMS_DocumentCategory
-        {
-            get
-            {
-                if ((_CMS_DocumentCategory == null))
-                {
-                    _CMS_DocumentCategory = base.CreateObjectSet<CMS_DocumentCategory>("CMS_DocumentCategory");
-                }
-                return _CMS_DocumentCategory;
-            }
-        }
-        private ObjectSet<CMS_DocumentCategory> _CMS_DocumentCategory;
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -347,6 +332,22 @@ namespace wp2k
             }
         }
         private ObjectSet<CMS_UserSite> _CMS_UserSite;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<CMS_Category> CMS_Category
+        {
+            get
+            {
+                if ((_CMS_Category == null))
+                {
+                    _CMS_Category = base.CreateObjectSet<CMS_Category>("CMS_Category");
+                }
+                return _CMS_Category;
+            }
+        }
+        private ObjectSet<CMS_Category> _CMS_Category;
 
         #endregion
 
@@ -382,14 +383,6 @@ namespace wp2k
         public void AddToCMS_DocumentAlias(CMS_DocumentAlias cMS_DocumentAlias)
         {
             base.AddObject("CMS_DocumentAlias", cMS_DocumentAlias);
-        }
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the CMS_DocumentCategory EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToCMS_DocumentCategory(CMS_DocumentCategory cMS_DocumentCategory)
-        {
-            base.AddObject("CMS_DocumentCategory", cMS_DocumentCategory);
         }
     
         /// <summary>
@@ -478,6 +471,14 @@ namespace wp2k
         public void AddToCMS_UserSite(CMS_UserSite cMS_UserSite)
         {
             base.AddObject("CMS_UserSite", cMS_UserSite);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the CMS_Category EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToCMS_Category(CMS_Category cMS_Category)
+        {
+            base.AddObject("CMS_Category", cMS_Category);
         }
 
         #endregion
@@ -1542,6 +1543,473 @@ namespace wp2k
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Document>("kenticofreeModel.FK_CMS_Attachment_AttachmentDocumentID_CMS_Document", "CMS_Document", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="kenticofreeModel", Name="CMS_Category")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class CMS_Category : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new CMS_Category object.
+        /// </summary>
+        /// <param name="categoryID">Initial value of the CategoryID property.</param>
+        /// <param name="categoryDescription">Initial value of the CategoryDescription property.</param>
+        /// <param name="categoryCount">Initial value of the CategoryCount property.</param>
+        /// <param name="categoryEnabled">Initial value of the CategoryEnabled property.</param>
+        /// <param name="categoryGUID">Initial value of the CategoryGUID property.</param>
+        /// <param name="categoryLastModified">Initial value of the CategoryLastModified property.</param>
+        public static CMS_Category CreateCMS_Category(global::System.Int32 categoryID, global::System.String categoryDescription, global::System.Int32 categoryCount, global::System.Boolean categoryEnabled, global::System.Guid categoryGUID, global::System.DateTime categoryLastModified)
+        {
+            CMS_Category cMS_Category = new CMS_Category();
+            cMS_Category.CategoryID = categoryID;
+            cMS_Category.CategoryDescription = categoryDescription;
+            cMS_Category.CategoryCount = categoryCount;
+            cMS_Category.CategoryEnabled = categoryEnabled;
+            cMS_Category.CategoryGUID = categoryGUID;
+            cMS_Category.CategoryLastModified = categoryLastModified;
+            return cMS_Category;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 CategoryID
+        {
+            get
+            {
+                return _CategoryID;
+            }
+            set
+            {
+                if (_CategoryID != value)
+                {
+                    OnCategoryIDChanging(value);
+                    ReportPropertyChanging("CategoryID");
+                    _CategoryID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("CategoryID");
+                    OnCategoryIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _CategoryID;
+        partial void OnCategoryIDChanging(global::System.Int32 value);
+        partial void OnCategoryIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String CategoryDisplayName
+        {
+            get
+            {
+                return _CategoryDisplayName;
+            }
+            set
+            {
+                OnCategoryDisplayNameChanging(value);
+                ReportPropertyChanging("CategoryDisplayName");
+                _CategoryDisplayName = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("CategoryDisplayName");
+                OnCategoryDisplayNameChanged();
+            }
+        }
+        private global::System.String _CategoryDisplayName;
+        partial void OnCategoryDisplayNameChanging(global::System.String value);
+        partial void OnCategoryDisplayNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String CategoryName
+        {
+            get
+            {
+                return _CategoryName;
+            }
+            set
+            {
+                OnCategoryNameChanging(value);
+                ReportPropertyChanging("CategoryName");
+                _CategoryName = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("CategoryName");
+                OnCategoryNameChanged();
+            }
+        }
+        private global::System.String _CategoryName;
+        partial void OnCategoryNameChanging(global::System.String value);
+        partial void OnCategoryNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String CategoryDescription
+        {
+            get
+            {
+                return _CategoryDescription;
+            }
+            set
+            {
+                OnCategoryDescriptionChanging(value);
+                ReportPropertyChanging("CategoryDescription");
+                _CategoryDescription = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("CategoryDescription");
+                OnCategoryDescriptionChanged();
+            }
+        }
+        private global::System.String _CategoryDescription;
+        partial void OnCategoryDescriptionChanging(global::System.String value);
+        partial void OnCategoryDescriptionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 CategoryCount
+        {
+            get
+            {
+                return _CategoryCount;
+            }
+            set
+            {
+                OnCategoryCountChanging(value);
+                ReportPropertyChanging("CategoryCount");
+                _CategoryCount = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryCount");
+                OnCategoryCountChanged();
+            }
+        }
+        private global::System.Int32 _CategoryCount;
+        partial void OnCategoryCountChanging(global::System.Int32 value);
+        partial void OnCategoryCountChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean CategoryEnabled
+        {
+            get
+            {
+                return _CategoryEnabled;
+            }
+            set
+            {
+                OnCategoryEnabledChanging(value);
+                ReportPropertyChanging("CategoryEnabled");
+                _CategoryEnabled = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryEnabled");
+                OnCategoryEnabledChanged();
+            }
+        }
+        private global::System.Boolean _CategoryEnabled;
+        partial void OnCategoryEnabledChanging(global::System.Boolean value);
+        partial void OnCategoryEnabledChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> CategoryUserID
+        {
+            get
+            {
+                return _CategoryUserID;
+            }
+            set
+            {
+                OnCategoryUserIDChanging(value);
+                ReportPropertyChanging("CategoryUserID");
+                _CategoryUserID = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryUserID");
+                OnCategoryUserIDChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _CategoryUserID;
+        partial void OnCategoryUserIDChanging(Nullable<global::System.Int32> value);
+        partial void OnCategoryUserIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid CategoryGUID
+        {
+            get
+            {
+                return _CategoryGUID;
+            }
+            set
+            {
+                OnCategoryGUIDChanging(value);
+                ReportPropertyChanging("CategoryGUID");
+                _CategoryGUID = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryGUID");
+                OnCategoryGUIDChanged();
+            }
+        }
+        private global::System.Guid _CategoryGUID;
+        partial void OnCategoryGUIDChanging(global::System.Guid value);
+        partial void OnCategoryGUIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CategoryLastModified
+        {
+            get
+            {
+                return _CategoryLastModified;
+            }
+            set
+            {
+                OnCategoryLastModifiedChanging(value);
+                ReportPropertyChanging("CategoryLastModified");
+                _CategoryLastModified = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryLastModified");
+                OnCategoryLastModifiedChanged();
+            }
+        }
+        private global::System.DateTime _CategoryLastModified;
+        partial void OnCategoryLastModifiedChanging(global::System.DateTime value);
+        partial void OnCategoryLastModifiedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> CategorySiteID
+        {
+            get
+            {
+                return _CategorySiteID;
+            }
+            set
+            {
+                OnCategorySiteIDChanging(value);
+                ReportPropertyChanging("CategorySiteID");
+                _CategorySiteID = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategorySiteID");
+                OnCategorySiteIDChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _CategorySiteID;
+        partial void OnCategorySiteIDChanging(Nullable<global::System.Int32> value);
+        partial void OnCategorySiteIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> CategoryParentID
+        {
+            get
+            {
+                return _CategoryParentID;
+            }
+            set
+            {
+                OnCategoryParentIDChanging(value);
+                ReportPropertyChanging("CategoryParentID");
+                _CategoryParentID = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryParentID");
+                OnCategoryParentIDChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _CategoryParentID;
+        partial void OnCategoryParentIDChanging(Nullable<global::System.Int32> value);
+        partial void OnCategoryParentIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String CategoryIDPath
+        {
+            get
+            {
+                return _CategoryIDPath;
+            }
+            set
+            {
+                OnCategoryIDPathChanging(value);
+                ReportPropertyChanging("CategoryIDPath");
+                _CategoryIDPath = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("CategoryIDPath");
+                OnCategoryIDPathChanged();
+            }
+        }
+        private global::System.String _CategoryIDPath;
+        partial void OnCategoryIDPathChanging(global::System.String value);
+        partial void OnCategoryIDPathChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String CategoryNamePath
+        {
+            get
+            {
+                return _CategoryNamePath;
+            }
+            set
+            {
+                OnCategoryNamePathChanging(value);
+                ReportPropertyChanging("CategoryNamePath");
+                _CategoryNamePath = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("CategoryNamePath");
+                OnCategoryNamePathChanged();
+            }
+        }
+        private global::System.String _CategoryNamePath;
+        partial void OnCategoryNamePathChanging(global::System.String value);
+        partial void OnCategoryNamePathChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> CategoryLevel
+        {
+            get
+            {
+                return _CategoryLevel;
+            }
+            set
+            {
+                OnCategoryLevelChanging(value);
+                ReportPropertyChanging("CategoryLevel");
+                _CategoryLevel = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryLevel");
+                OnCategoryLevelChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _CategoryLevel;
+        partial void OnCategoryLevelChanging(Nullable<global::System.Int32> value);
+        partial void OnCategoryLevelChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> CategoryOrder
+        {
+            get
+            {
+                return _CategoryOrder;
+            }
+            set
+            {
+                OnCategoryOrderChanging(value);
+                ReportPropertyChanging("CategoryOrder");
+                _CategoryOrder = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CategoryOrder");
+                OnCategoryOrderChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _CategoryOrder;
+        partial void OnCategoryOrderChanging(Nullable<global::System.Int32> value);
+        partial void OnCategoryOrderChanged();
+
+        #endregion
+
+    
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User")]
+        public CMS_User CMS_User
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_User>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_User>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<CMS_User> CMS_UserReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_User>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_User>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_User", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "CMS_DocumentCategory1", "CMS_Document")]
+        public EntityCollection<CMS_Document> CMS_Document
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_Document>("kenticofreeModel.CMS_DocumentCategory1", "CMS_Document");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_Document>("kenticofreeModel.CMS_DocumentCategory1", "CMS_Document", value);
                 }
             }
         }
@@ -4824,28 +5292,6 @@ namespace wp2k
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_DocumentCategory")]
-        public EntityCollection<CMS_DocumentCategory> CMS_DocumentCategory
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_DocumentCategory>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_DocumentCategory");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_DocumentCategory>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_DocumentCategory", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "CMS_DocumentTag", "CMS_Tag")]
         public EntityCollection<CMS_Tag> CMS_Tag
         {
@@ -5010,6 +5456,28 @@ namespace wp2k
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_Document_DocumentNodeID_CMS_Tree", "CMS_Tree", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "CMS_DocumentCategory1", "CMS_Category")]
+        public EntityCollection<CMS_Category> CMS_Category
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_Category>("kenticofreeModel.CMS_DocumentCategory1", "CMS_Category");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_Category>("kenticofreeModel.CMS_DocumentCategory1", "CMS_Category", value);
                 }
             }
         }
@@ -5379,134 +5847,6 @@ namespace wp2k
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Tree>("kenticofreeModel.FK_CMS_DocumentAlias_AliasNodeID_CMS_Tree", "CMS_Tree", value);
-                }
-            }
-        }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="kenticofreeModel", Name="CMS_DocumentCategory")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class CMS_DocumentCategory : EntityObject
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new CMS_DocumentCategory object.
-        /// </summary>
-        /// <param name="documentID">Initial value of the DocumentID property.</param>
-        /// <param name="categoryID">Initial value of the CategoryID property.</param>
-        public static CMS_DocumentCategory CreateCMS_DocumentCategory(global::System.Int32 documentID, global::System.Int32 categoryID)
-        {
-            CMS_DocumentCategory cMS_DocumentCategory = new CMS_DocumentCategory();
-            cMS_DocumentCategory.DocumentID = documentID;
-            cMS_DocumentCategory.CategoryID = categoryID;
-            return cMS_DocumentCategory;
-        }
-
-        #endregion
-
-        #region Primitive Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 DocumentID
-        {
-            get
-            {
-                return _DocumentID;
-            }
-            set
-            {
-                if (_DocumentID != value)
-                {
-                    OnDocumentIDChanging(value);
-                    ReportPropertyChanging("DocumentID");
-                    _DocumentID = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("DocumentID");
-                    OnDocumentIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _DocumentID;
-        partial void OnDocumentIDChanging(global::System.Int32 value);
-        partial void OnDocumentIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 CategoryID
-        {
-            get
-            {
-                return _CategoryID;
-            }
-            set
-            {
-                if (_CategoryID != value)
-                {
-                    OnCategoryIDChanging(value);
-                    ReportPropertyChanging("CategoryID");
-                    _CategoryID = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("CategoryID");
-                    OnCategoryIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _CategoryID;
-        partial void OnCategoryIDChanging(global::System.Int32 value);
-        partial void OnCategoryIDChanged();
-
-        #endregion
-
-    
-        #region Navigation Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document")]
-        public CMS_Document CMS_Document
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Document>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Document>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<CMS_Document> CMS_DocumentReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<CMS_Document>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<CMS_Document>("kenticofreeModel.FK_CMS_DocumentCategory_DocumentID_CMS_Document", "CMS_Document", value);
                 }
             }
         }
@@ -7965,6 +8305,28 @@ namespace wp2k
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_UserSite>("kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User", "CMS_UserSite", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("kenticofreeModel", "FK_CMS_Category_CategoryUserID_CMS_User", "CMS_Category")]
+        public EntityCollection<CMS_Category> CMS_Category
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CMS_Category>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_Category");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CMS_Category>("kenticofreeModel.FK_CMS_Category_CategoryUserID_CMS_User", "CMS_Category", value);
                 }
             }
         }

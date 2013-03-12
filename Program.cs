@@ -20,6 +20,7 @@ namespace wp2k {
 		protected static XDocument wpxml = XDocument.Load(config.Get("file"));
 		protected static XNamespace wpns = "http://wordpress.org/export/1.1/";
 		protected static XNamespace encoded = "http://purl.org/rss/1.0/modules/content/";
+		protected static XNamespace dc = "http://purl.org/dc/elements/1.1/";
 		// Some common information that doesn't like to be parsed on the fly
 		protected static int blogId = Int32.Parse(config.Get("kenticoBlogId"));
 		protected static int siteId = Int32.Parse(config.Get("siteId"));
@@ -27,31 +28,145 @@ namespace wp2k {
 
 		static void Main(string[] args) {
 			using (kenticofreeEntities context = new kenticofreeEntities()) {
+				ProcessTags(context);
+				ProcessCategories(context);
 				ProcessAuthors(context);
-				//ProcessPosts(context);
+				ProcessPosts(context);
+			}
+		}
+
+		protected static void ProcessTags(kenticofreeEntities context) {
+			CMS_TagGroup tg = GetTagGroup(context);
+			var tags = (from t in wpxml.Descendants(wpns + "tag")
+						select new CMS_Tag {
+							TagName = t.Element(wpns + "tag_slug").Value,
+							TagGroupID = tg.TagGroupID,
+							TagCount = 0
+						});
+
+			foreach (CMS_Tag tag in tags) {
+				// Don't add an existing tag
+				var exists = (from t in context.CMS_Tag
+							  where t.TagName == tag.TagName && t.TagGroupID == tag.TagGroupID
+							  select t
+							);
+				if (!exists.Any()) {
+					context.CMS_Tag.AddObject(tag);
+				}
+			}
+
+			context.SaveChanges();
+		}
+
+		/**
+		 * Add categories into the database.
+		 * 
+		 * @param entity context
+		 */
+		protected static void ProcessCategories(kenticofreeEntities context) {
+			var categories = (from c in wpxml.Descendants(wpns + "category")
+							  select new CMS_Category {
+								  CategoryCount = 0,
+								  CategoryDisplayName = c.Element(wpns + "cat_name").Value,
+								  CategoryName = c.Element(wpns + "category_nicename").Value,
+								  CategoryDescription = c.Element(wpns + "cat_name").Value,
+								  CategoryEnabled = true,
+								  CategoryGUID = Guid.NewGuid(),
+								  CategoryLastModified = DateTime.Now,
+								  CategorySiteID = Int32.Parse(config.Get("siteId")),
+								  CategoryNamePath = "/" + c.Element(wpns + "category_nicename").Value,
+								  CategoryLevel = 0,
+								  CategoryParentID = null
+							  });
+			
+			CMS_Category lastCat = null;
+			// TODO: Add category nesting (not doing it right now, because our export doesn't nest categories)
+			foreach (CMS_Category cat in categories) {
+				// Make sure we don't add a category that already exists
+				var exists = (from c in context.CMS_Category
+							  where c.CategoryName == cat.CategoryName
+							  select c
+							);
+				
+				if (!exists.Any()) {
+					if (lastCat == null) {
+						lastCat = (from o in context.CMS_Category
+								   where o.CategorySiteID == cat.CategorySiteID && o.CategoryLevel == cat.CategoryLevel
+								   orderby o.CategoryOrder descending
+								   select o
+								).FirstOrDefault();
+						if (lastCat == null) {
+							lastCat = new CMS_Category() { CategoryOrder = 0 };
+						}
+					}
+
+					cat.CategoryOrder = lastCat.CategoryOrder + 1;
+
+					/* We can't make the IDPath until we get an ID, and I can't find how Kentico does this, 
+					 * so we have to do it the long way. */
+					context.CMS_Category.AddObject(cat);
+					context.SaveChanges(); // Add the category
+					// Bulid the path and update our category
+					cat.CategoryIDPath = "/" + cat.CategoryID.ToString().PadLeft(8, '0');
+					context.SaveChanges();
+
+					// Let's save the last inserted category, so we don't have to access the database so much
+					lastCat = cat;
+				}
 			}
 		}
 
 		/**
-		 * Generate a sha2 hash the same way Kentico does.
+		 * Get the tag group.
 		 * 
-		 * CMS.GlobalHelper.SecurityHelper.GetSHA2Hash() and ValidationHelper.GetStringFromHash()
+		 * Kentico encourages grouping tags. Additionally, tags aren't just used for blog posts.
+		 * Therefore, we're going to use or create a tag group specifically for our blog import.
+		 * This group name is set in the config, so it can be an existing one. It doesn't have to
+		 * exist, though, and if it doesn't, this script will create it.
+		 * 
+		 * @param entity context
+		 * @return CMS_TagGroup
 		 */
-		private static string GetHash(string inputData) {
-			SHA256Managed sh = new SHA256Managed();
-			byte[] bytes = Encoding.Default.GetBytes(inputData);
-			byte[] hashBytes = sh.ComputeHash(bytes);
+		protected static CMS_TagGroup GetTagGroup(kenticofreeEntities context) {
+			string groupName = config.Get("tagGroupName");
+			var tg = (from t in context.CMS_TagGroup
+								where t.TagGroupName == groupName
+								select t
+							);
 
-			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < hashBytes.Length; i++)
-			{
-				byte b = hashBytes[i];
-				stringBuilder.Append(string.Format("{0:x2}", b));
+			if (tg.Any()) {
+				return (CMS_TagGroup)tg.First();
 			}
+			else {
+				Regex forbidden = new Regex(forbiddenChars);
+				CMS_TagGroup group = new CMS_TagGroup() {
+					TagGroupName = forbidden.Replace(groupName, ""),
+					TagGroupDisplayName = groupName,
+					TagGroupDescription = groupName,
+					TagGroupGUID = Guid.NewGuid(),
+					TagGroupSiteID = Int32.Parse(config.Get("siteId")),
+					TagGroupIsAdHoc = false,
+					TagGroupLastModified = DateTime.Now
+				};
 
-			return stringBuilder.ToString();
+				context.CMS_TagGroup.AddObject(group);
+				context.SaveChanges();
+				return group;
+			}
 		}
 
+		/**
+		 * Create users based on the authors listed in the XML.
+		 * 
+		 * Users are required to retain the "multiple authors" capability, otherwise we lose the
+		 * ability to discern who wrote what. Additionally, it allows us to create user accounts for
+		 * everyone enmasse. The new accounts are given a dummy password, since not all accounts are
+		 * active anymore, and therefore would never have a password set if we didn't do it.
+		 * 
+		 * This function currently assumes that users have not yet been added.
+		 * 
+		 * @param entity context
+		 */
 		protected static void ProcessAuthors(kenticofreeEntities context)
 		{
 			var authors = (from a in wpxml.Descendants(wpns + "author")
@@ -67,7 +182,8 @@ namespace wp2k {
 								   PreferredCultureCode = "en-US",
 								   PreferredUICultureCode = "en-US",
 								   UserEnabled = true,
-								   UserIsEditor = true,
+								   //UserIsEditor = true,
+								   UserIsEditor = false,
 								   UserIsGlobalAdministrator = false,
 								   UserIsDomain = false,
 								   UserIsExternal = false,
@@ -101,7 +217,8 @@ namespace wp2k {
 				// Connect the user with a role
 				CMS_UserRole role = new CMS_UserRole() {
 					UserID = author.UserID,
-					RoleID = 6 // CMS Editors
+					//RoleID = 6 // CMS Editors
+					RoleID = 2 // CMS Basic User (using this for testing, because the free version doesn't allow for more editors and will completely explode if we add more)
 				};
 
 				// Connect the user with the site
@@ -114,14 +231,13 @@ namespace wp2k {
 				context.CMS_UserRole.AddObject(role);
 				context.CMS_UserSite.AddObject(site);
 				context.SaveChanges();
-
-				// TODO: Just one for testing purposes
-				break;
 			}
 		}
 
 		/**
 		 * The main function for importing the posts.
+		 * 
+		 * @param entity context
 		 */
 		protected static void ProcessPosts(kenticofreeEntities context) {
 			// Gather list of Posts and make them each Entities
@@ -133,7 +249,7 @@ namespace wp2k {
 								BlogPostDate = DateTime.Parse(i.Element(wpns + "post_date").Value),
 								BlogPostSummary = i.Element("description").Value,
 								BlogPostAllowComments = true,
-								BlogPostBody = i.Element(encoded + "encoded").Value, // CDATA element
+								BlogPostBody = i.Element(encoded + "encoded").Value.Replace("\n", "<br/>"), // CDATA element
 								BlogLogActivity = true
 							});
 
@@ -146,11 +262,53 @@ namespace wp2k {
 
 			foreach (CONTENT_BlogPost post in posts) {
 				CMS_Document postDoc = ImportPost(context, blog, post);
+				LinkCategoriesAndTags(context, postDoc, post);
 				ImportComments(context, postDoc);
-
-				// TODO: Break for now, so we don't have three years' worth of entries on the trial runs
-				break;
 			}
+		}
+		
+		/**
+		 * Link categories and tags to a post.
+		 * 
+		 * This is combined into one function, because the Wordpress XML uses the same "category" tag
+		 * for both categories and tags for a post, and just uses the "domain" attribute to distinguish
+		 * between them.
+		 * 
+		 * @param entity context
+		 * @param CMS_Document postDoc
+		 * @param CONTENT_BlogPost post
+		 */
+		protected static void LinkCategoriesAndTags(kenticofreeEntities context, CMS_Document postDoc, CONTENT_BlogPost post) {
+			var xml = (from c in wpxml.Descendants("item")
+							  where Int32.Parse(c.Element(wpns + "post_id").Value) == post.BlogPostID
+							  select c
+							).Single();
+			var categories = (from c in xml.Descendants("category")
+							  select new {
+								  Domain = c.Attribute("domain").Value,
+								  Nicename = c.Attribute("nicename").Value
+							  }
+							);
+
+			foreach (var cat in categories) {
+				Console.WriteLine(cat.Nicename);
+				if (cat.Domain == "post_tag") {
+					CMS_TagGroup tg = GetTagGroup(context);
+					CMS_Tag tag = (from t in context.CMS_Tag
+								   where t.TagName == cat.Nicename && t.TagGroupID == tg.TagGroupID
+								   select t
+								).SingleOrDefault();
+					postDoc.CMS_Tag.Add(tag);
+				}
+				else if (cat.Domain == "category") {
+					CMS_Category category = (from c in context.CMS_Category
+											 where c.CategoryName == cat.Nicename
+											 select c
+											).SingleOrDefault();
+					postDoc.CMS_Category.Add(category);
+				}
+			}
+			context.SaveChanges();
 		}
 
 
@@ -168,8 +326,9 @@ namespace wp2k {
 		 */
 		protected static CMS_Document ImportPost(kenticofreeEntities context, CMS_Tree blog, CONTENT_BlogPost post) {
 			Regex forbidden = new Regex(forbiddenChars);
+			Regex consolidateDashes = new Regex("[-]{2}");
 
-			/* We want to preserve the IDs of the Posts, but EF won't let us turn on IDENTITY_INSERT
+			/* We want to preserve the IDs of the Posts for linking, but EF won't let us turn on IDENTITY_INSERT
 			* with its available methods (ExecuteStoreCommand and SaveChanges are different connections, it seems). 
 			* So we have to do it the old fashioned way.
 			*/
@@ -213,21 +372,28 @@ namespace wp2k {
 
 			// Add a new node only if one doesn't already exist
 			if (treeNode == null) {
+				string nodeAlias = consolidateDashes.Replace(forbidden.Replace(post.BlogPostTitle, "-"), "-");
+				nodeAlias = (nodeAlias.Length > 50 ? nodeAlias.Substring(0, 50) : nodeAlias); // Truncate the alias to avoid SQL Server errors
+
 				// Create the Tree Node for the post and add it in
 				treeNode = new CMS_Tree() {
 					NodeAliasPath = string.Format("{0}/{1}", month.NodeAliasPath, forbidden.Replace(post.BlogPostTitle, "-")),
 					NodeName = post.BlogPostTitle,
-					NodeAlias = forbidden.Replace(post.BlogPostTitle, "-"),
+					NodeAlias = nodeAlias,
 					NodeClassID = blogClass.ClassID,
 					NodeParentID = month.NodeID,
 					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")) + 2,
 					NodeACLID = 1, // Default ACL ID
 					NodeSiteID = siteId,
 					NodeGUID = Guid.NewGuid(),
-					NodeOwner = nodeOwnerId,
+					//NodeOwner = nodeOwnerId,
 					NodeInheritPageLevels = "",
 					NodeTemplateForAllCultures = true
 				};
+
+				CMS_User author = GetAuthor(context, post);
+				treeNode.NodeOwner = author.UserID;
+
 				context.CMS_Tree.AddObject(treeNode);
 				treeNode.NodeOrder = GetNodeOrder(context, treeNode);
 				month.NodeChildNodesCount++; // Increment the child nodes count, so the new post will display in the CMS
@@ -238,6 +404,27 @@ namespace wp2k {
 			CMS_Document postDoc = AddDocument(context, treeNode, post.BlogPostID);
 
 			return postDoc;
+		}
+
+		/**
+		 * Get the author from the XML to map the post to the user.
+		 * 
+		 * This allows for the "multiple authors" feature.
+		 * 
+		 * @return CMS_User
+		 */
+		protected static CMS_User GetAuthor(kenticofreeEntities context, CONTENT_BlogPost post) {
+			var authorname = (from p in wpxml.Descendants("item")
+							  where Int32.Parse(p.Element(wpns + "post_id").Value) == post.BlogPostID
+							  select p
+							).SingleOrDefault().Element(dc + "creator").Value;
+
+			CMS_User kenticoUser = (from p in context.CMS_User
+							   where p.UserName == authorname
+							   select p
+							).SingleOrDefault();
+
+			return kenticoUser;
 		}
 
 		/**
@@ -301,6 +488,8 @@ namespace wp2k {
 							  select m);
 
 			CMS_Tree treeNode = new CMS_Tree();
+			// Find out the classID of the CMS.BlogMonth document type
+			CMS_Class monthClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogMonth").First();
 
 			// If not, make a new one
 			if (monthQuery.Any() == false) {
@@ -310,9 +499,6 @@ namespace wp2k {
 				};
 
 				context.CONTENT_BlogMonth.AddObject(month);
-
-				// Found out the classID of the CMS.BlogMonth document type
-				CMS_Class monthClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogMonth").First();
 
 				// Add the corresponding tree node
 				treeNode = new CMS_Tree() {
@@ -344,7 +530,7 @@ namespace wp2k {
 				treeNode = (from t in context.CMS_Tree
 							join d in context.CMS_Document on t.NodeID equals d.DocumentNodeID
 							join b in context.CONTENT_BlogMonth on d.DocumentForeignKeyValue equals b.BlogMonthID
-							where b.BlogMonthID == month.BlogMonthID
+							where b.BlogMonthID == month.BlogMonthID && t.NodeClassID == monthClass.ClassID
 							select t).Single();
 			}
 
@@ -407,6 +593,25 @@ namespace wp2k {
 			}
 
 			return nodeOrder;
+		}
+
+		/**
+		 * Generate a sha2 hash the same way Kentico does.
+		 * 
+		 * CMS.GlobalHelper.SecurityHelper.GetSHA2Hash() and ValidationHelper.GetStringFromHash()
+		 */
+		private static string GetHash(string inputData) {
+			SHA256Managed sh = new SHA256Managed();
+			byte[] bytes = Encoding.Default.GetBytes(inputData);
+			byte[] hashBytes = sh.ComputeHash(bytes);
+
+			StringBuilder stringBuilder = new StringBuilder();
+			for (int i = 0; i < hashBytes.Length; i++) {
+				byte b = hashBytes[i];
+				stringBuilder.Append(string.Format("{0:x2}", b));
+			}
+
+			return stringBuilder.ToString();
 		}
 	}
 }
