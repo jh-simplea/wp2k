@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Transactions;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Data.Objects;
 
 namespace wp2k {
 	class Program {
@@ -35,6 +36,11 @@ namespace wp2k {
 			}
 		}
 
+		/**
+		 * Add tags to the database.
+		 * 
+		 * @param entity context
+		 */
 		protected static void ProcessTags(kenticofreeEntities context) {
 			Console.WriteLine("Adding tags to database.");
 
@@ -313,6 +319,40 @@ namespace wp2k {
 				CMS_Document postDoc = ImportPost(context, blog, post);
 				LinkCategoriesAndTags(context, postDoc, post);
 				ImportComments(context, postDoc);
+			}
+
+			OrderPosts(context, blog);
+		}
+
+		/**
+		 * Order the posts by date.
+		 * 
+		 * Orders the posts and months by date, so that they're in a sane order for a blog. Otherwise,
+		 * it ends up ordering alphabetically (April 2008, April 2009, December 2008...). 
+		 * 
+		 * It's not perfect, since the sproc uses the DocumentModifiedDate field to order things,
+		 * but it does a sufficient job. Anything that isn't ordered correctly is generally just
+		 * one position off, which can easily be moved by the user.
+		 * 
+		 * This may be able to be deprecated, if we can build the correct ordering into the insert
+		 * functions. At the moment, though, this does the job, and I'm running out of time to use
+		 * this script for its original purpose.
+		 * 
+		 * @param entity context
+		 * @param CMS_Tree blogTreeNode
+		 */
+		protected static void OrderPosts(kenticofreeEntities context, CMS_Tree blogTreeNode) {
+			Console.WriteLine("Ordering blog months.");
+			context.ExecuteStoreCommand("exec Proc_CMS_Tree_OrderDateAsc @NodeParentID={0}", blogTreeNode.NodeID);
+
+			Console.WriteLine("Ording blog posts.");
+			var blogMonths = (from t in context.CMS_Tree
+							  where t.NodeParentID == blogTreeNode.NodeID
+							  select t
+							);
+
+			foreach (CMS_Tree month in blogMonths) {
+				context.ExecuteStoreCommand("exec Proc_CMS_Tree_OrderDateAsc @NodeParentID={0}",month.NodeID);
 			}
 		}
 		

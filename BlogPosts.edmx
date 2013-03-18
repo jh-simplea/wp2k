@@ -868,6 +868,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="Proc_CMS_Tree_OrderDateAsc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="NodeParentID" Type="int" Mode="In" />
+        </Function>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
