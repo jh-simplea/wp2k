@@ -36,6 +36,8 @@ namespace wp2k {
 		}
 
 		protected static void ProcessTags(kenticofreeEntities context) {
+			Console.WriteLine("Adding tags to database.");
+
 			CMS_TagGroup tg = GetTagGroup(context);
 			var tags = (from t in wpxml.Descendants(wpns + "tag")
 						select new CMS_Tag {
@@ -64,6 +66,7 @@ namespace wp2k {
 		 * @param entity context
 		 */
 		protected static void ProcessCategories(kenticofreeEntities context) {
+			Console.WriteLine("Adding categories to database.");
 			var categories = (from c in wpxml.Descendants(wpns + "category")
 							  select new CMS_Category {
 								  CategoryCount = 0,
@@ -169,6 +172,7 @@ namespace wp2k {
 		 */
 		protected static void ProcessAuthors(kenticofreeEntities context)
 		{
+			Console.WriteLine("Adding authors to database.");
 			var authors = (from a in wpxml.Descendants(wpns + "author")
 						   where a.Element(wpns + "author_login").Value != "admin" // Ignore the "admin" user, since we already have an admin in Kentico (and "admin" is a restricted username)
 							   select new CMS_User {
@@ -193,44 +197,52 @@ namespace wp2k {
 								   UserLastModified = DateTime.Now
 							   });
 
-			foreach(CMS_User author in authors) {
-				// I don't like blank passwords for so many users, especially since most won't ever sign in. So let's add a fairly simple password to keep the accounts from just being accessed with zero effort
-				author.UserPassword = GetHash("addedByWP2k2013" + author.UserGUID);
+			foreach (CMS_User author in authors) {
+				var exists = (from a in context.CMS_User
+							  where a.UserName == author.UserName
+							  select a
+							);
 
-				// Add and save to get the UserID
-				context.CMS_User.AddObject(author);
-				context.SaveChanges();
+				// Don't add ones that already exist
+				if (!exists.Any()) {
+					// I don't like blank passwords for so many users, especially since most won't ever sign in. So let's add a fairly simple password to keep the accounts from just being accessed with zero effort
+					author.UserPassword = GetHash("addedByWP2k2013" + author.UserGUID);
 
-				// Create a user profile
-				CMS_UserSettings settings = new CMS_UserSettings() {
-					UserActivationDate = DateTime.Now,
-					UserShowSplashScreen = true,
-					UserSettingsUserGUID = author.UserGUID,
-					UserSettingsUserID = author.UserID,
-					UserBlogPosts = 0, // Initialize to 0 so we can increment easily
-					UserWaitingForApproval = false,
-					UserWebPartToolbarEnabled = true,
-					UserWebPartToolbarPosition = "right",
-					UserBadgeID = 43
-				};
+					// Add and save to get the UserID
+					context.CMS_User.AddObject(author);
+					context.SaveChanges();
 
-				// Connect the user with a role
-				CMS_UserRole role = new CMS_UserRole() {
-					UserID = author.UserID,
-					//RoleID = 6 // CMS Editors
-					RoleID = 2 // CMS Basic User (using this for testing, because the free version doesn't allow for more editors and will completely explode if we add more)
-				};
+					// Create a user profile
+					CMS_UserSettings settings = new CMS_UserSettings() {
+						UserActivationDate = DateTime.Now,
+						UserShowSplashScreen = true,
+						UserSettingsUserGUID = author.UserGUID,
+						UserSettingsUserID = author.UserID,
+						UserBlogPosts = 0, // Initialize to 0 so we can increment easily
+						UserWaitingForApproval = false,
+						UserWebPartToolbarEnabled = true,
+						UserWebPartToolbarPosition = "right",
+						UserBadgeID = 43
+					};
 
-				// Connect the user with the site
-				CMS_UserSite site = new CMS_UserSite() {
-					UserID = author.UserID,
-					SiteID = siteId
-				};
+					// Connect the user with a role
+					CMS_UserRole role = new CMS_UserRole() {
+						UserID = author.UserID,
+						//RoleID = 6 // CMS Editors
+						RoleID = 2 // CMS Basic User (using this for testing, because the free version doesn't allow for more editors and will completely explode if we add more)
+					};
 
-				context.CMS_UserSettings.AddObject(settings);
-				context.CMS_UserRole.AddObject(role);
-				context.CMS_UserSite.AddObject(site);
-				context.SaveChanges();
+					// Connect the user with the site
+					CMS_UserSite site = new CMS_UserSite() {
+						UserID = author.UserID,
+						SiteID = siteId
+					};
+
+					context.CMS_UserSettings.AddObject(settings);
+					context.CMS_UserRole.AddObject(role);
+					context.CMS_UserSite.AddObject(site);
+					context.SaveChanges();
+				}
 			}
 		}
 
@@ -240,6 +252,7 @@ namespace wp2k {
 		 * @param entity context
 		 */
 		protected static void ProcessPosts(kenticofreeEntities context) {
+			Console.WriteLine("Adding posts to database.");
 			// Gather list of Posts and make them each Entities
 			var posts = (from i in wpxml.Descendants("item")
 							where i.Element(wpns + "post_type").Value == "post" && i.Element(wpns + "status").Value == "publish"
@@ -247,7 +260,7 @@ namespace wp2k {
 								BlogPostID = Int32.Parse(i.Element(wpns + "post_id").Value),
 								BlogPostTitle = i.Element("title").Value,
 								BlogPostDate = DateTime.Parse(i.Element(wpns + "post_date").Value),
-								BlogPostSummary = i.Element("description").Value,
+								BlogPostSummary = (String.IsNullOrEmpty(i.Element("description").Value) ? i.Element("title").Value : i.Element("description").Value),
 								BlogPostAllowComments = true,
 								BlogPostBody = i.Element(encoded + "encoded").Value.Replace("\n", "<br/>"), // CDATA element
 								BlogLogActivity = true
@@ -258,8 +271,44 @@ namespace wp2k {
 								join d in context.CMS_Document on b.BlogID equals d.DocumentForeignKeyValue
 								join t in context.CMS_Tree on d.DocumentNodeID equals t.NodeID
 								where b.BlogID == blogId && t.NodeClassID == 3423 //Blog class ID, otherwise we end up with a bunch of stuff that aren't blogs
-								select t).First();
+								select t).FirstOrDefault();
+			if (blog == null) {
+				Console.WriteLine("No blog with the ID of " + blogId + " detected. Adding new blog.");
+				CONTENT_Blog b = new CONTENT_Blog() {
+							BlogName = "BlogImport",
+							BlogDescription = "The Imported Blog",
+							BlogOpenCommentsFor = "-1",
+							BlogEnableTrackbacks = true
+				};
 
+				CMS_Class blogClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogPost").First();
+				CMS_Tree root = context.CMS_Tree.Where(x => x.NodeClassID == 1095).Where(x => x.NodeSiteID == siteId).First();
+
+				blog = new CMS_Tree() {
+					NodeAliasPath = "/" + b.BlogName,
+					NodeName = b.BlogName,
+					NodeAlias = b.BlogName,
+					NodeClassID = blogClass.ClassID,
+					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")),
+					NodeACLID = 1, // Default ACL ID
+					NodeSiteID = siteId,
+					NodeOwner = nodeOwnerId,
+					NodeOrder = 100,
+					NodeGUID = Guid.NewGuid(),
+					NodeInheritPageLevels = "",
+					NodeTemplateForAllCultures = true,
+					NodeChildNodesCount = 0,
+					NodeParentID = (root != null ? root.NodeID : 0)
+				};
+
+				context.CONTENT_Blog.AddObject(b);
+				context.CMS_Tree.AddObject(blog);
+				context.SaveChanges();
+
+				AddDocument(context, blog, b.BlogID);
+			}
+
+			Console.WriteLine("Connecting categories, tags, and comments to posts. This may take a while.");
 			foreach (CONTENT_BlogPost post in posts) {
 				CMS_Document postDoc = ImportPost(context, blog, post);
 				LinkCategoriesAndTags(context, postDoc, post);
@@ -279,6 +328,7 @@ namespace wp2k {
 		 * @param CONTENT_BlogPost post
 		 */
 		protected static void LinkCategoriesAndTags(kenticofreeEntities context, CMS_Document postDoc, CONTENT_BlogPost post) {
+			
 			var xml = (from c in wpxml.Descendants("item")
 							  where Int32.Parse(c.Element(wpns + "post_id").Value) == post.BlogPostID
 							  select c
@@ -291,7 +341,7 @@ namespace wp2k {
 							);
 
 			foreach (var cat in categories) {
-				Console.WriteLine(cat.Nicename);
+				
 				if (cat.Domain == "post_tag") {
 					CMS_TagGroup tg = GetTagGroup(context);
 					CMS_Tag tag = (from t in context.CMS_Tag
@@ -299,6 +349,13 @@ namespace wp2k {
 								   select t
 								).SingleOrDefault();
 					postDoc.CMS_Tag.Add(tag);
+					if (String.IsNullOrEmpty(postDoc.DocumentTags)) {
+						postDoc.DocumentTags = tag.TagName;
+					}
+					else {
+						postDoc.DocumentTags = postDoc.DocumentTags + ", " + tag.TagName;
+					}
+					tag.TagCount++;
 				}
 				else if (cat.Domain == "category") {
 					CMS_Category category = (from c in context.CMS_Category
@@ -306,6 +363,7 @@ namespace wp2k {
 											 select c
 											).SingleOrDefault();
 					postDoc.CMS_Category.Add(category);
+					category.CategoryCount++;
 				}
 			}
 			context.SaveChanges();
@@ -386,9 +444,9 @@ namespace wp2k {
 					NodeACLID = 1, // Default ACL ID
 					NodeSiteID = siteId,
 					NodeGUID = Guid.NewGuid(),
-					//NodeOwner = nodeOwnerId,
 					NodeInheritPageLevels = "",
-					NodeTemplateForAllCultures = true
+					NodeTemplateForAllCultures = true,
+					NodeChildNodesCount = 0
 				};
 
 				CMS_User author = GetAuthor(context, post);
@@ -397,11 +455,14 @@ namespace wp2k {
 				context.CMS_Tree.AddObject(treeNode);
 				treeNode.NodeOrder = GetNodeOrder(context, treeNode);
 				month.NodeChildNodesCount++; // Increment the child nodes count, so the new post will display in the CMS
+				blog.NodeChildNodesCount++; // Increment the blog's child nodes count, too.
 				context.SaveChanges();
 			}
 
+			CMS_TagGroup tagGroup = GetTagGroup(context);
+
 			// Create the document and add it into the database
-			CMS_Document postDoc = AddDocument(context, treeNode, post.BlogPostID);
+			CMS_Document postDoc = AddDocument(context, treeNode, post.BlogPostID, tagGroup.TagGroupID);
 
 			return postDoc;
 		}
@@ -487,7 +548,7 @@ namespace wp2k {
 							  where m.BlogMonthStartingDate.Year == post.BlogPostDate.Year && m.BlogMonthStartingDate.Month == post.BlogPostDate.Month
 							  select m);
 
-			CMS_Tree treeNode = new CMS_Tree();
+			CMS_Tree treeNode = null;
 			// Find out the classID of the CMS.BlogMonth document type
 			CMS_Class monthClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogMonth").First();
 
@@ -543,9 +604,10 @@ namespace wp2k {
 		 * @param entity context
 		 * @param CMS_Tree treeNode
 		 * @param int itemId
+		 * @param bool hasTags
 		 * @return CMS_Document
 		 */
-		protected static CMS_Document AddDocument(kenticofreeEntities context, CMS_Tree treeNode, int itemId) {
+		protected static CMS_Document AddDocument(kenticofreeEntities context, CMS_Tree treeNode, int itemId, int tagGroupId = 0) {
 			// Create the document and add it into the database
 			CMS_Document doc = new CMS_Document() {
 				DocumentName = treeNode.NodeName,
@@ -567,6 +629,11 @@ namespace wp2k {
 				DocumentContent = "",
 				DocumentIsArchived = false
 			};
+
+			// Include the TagGroupID that the documents belong to. Used largely for blog entries.
+			if (tagGroupId > 0) {
+				doc.DocumentTagGroupID = tagGroupId;
+			}
 
 			context.CMS_Document.AddObject(doc);
 			context.SaveChanges();
