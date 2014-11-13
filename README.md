@@ -36,3 +36,7 @@ Because of the variable nature of Kentico setups, the application comes with a n
 * tagGroupName - The name for the Tag Group that all transferred tags will be filed under. Required to connect tags to posts.
 * siteId - The ID of the Kentico Site the blog belongs to.
 * xmlTrumpsDb - For posts, this provides the option to allow or deny the XML file's ability to overwrite existing blog entries with the same (BlogPost) ID.
+ 
+### License
+
+Released under the [DBAD Public License](http://www.dbad-license.org/). Fork it to your heart's content. Update it, fix it, re-release it with your changes. Just don't be a dick. If you make money off it, it'd be nice (though not required) to get me coffee or lunch money in return. Like most open source stuff, this project is provided as is and with no warranty.
