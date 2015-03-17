@@ -201,8 +201,8 @@
           <Property Name="ClassIsCoupledClass" Type="bit" Nullable="false" />
           <Property Name="ClassXmlSchema" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ClassFormDefinition" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="ClassEditingPageUrl" Type="nvarchar" Nullable="false" MaxLength="450" />
-          <Property Name="ClassListPageUrl" Type="nvarchar" Nullable="false" MaxLength="450" />
+          <Property Name="ClassEditingPageUrl" Type="nvarchar" Nullable="true" MaxLength="450" />
+          <Property Name="ClassListPageUrl" Type="nvarchar" Nullable="true" MaxLength="450" />
           <Property Name="ClassNodeNameSource" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="ClassTableName" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="ClassViewPageUrl" Type="nvarchar" MaxLength="450" />
@@ -400,7 +400,7 @@
           <Property Name="NodeHeadTags" Type="nvarchar(max)" />
           <Property Name="NodeBodyElementAttributes" Type="nvarchar(max)" />
           <Property Name="NodeInheritPageLevels" Type="nvarchar" MaxLength="200" />
-          <Property Name="NodeChildNodesCount" Type="int" />
+          <Property Name="NodeHasChildren" Type="bit" />
           <Property Name="RequiresSSL" Type="int" />
           <Property Name="NodeLinkedNodeID" Type="int" />
           <Property Name="NodeOwner" Type="int" />
@@ -474,7 +474,7 @@
           <Property Name="UserTimeZoneID" Type="int" />
           <Property Name="UserAvatarID" Type="int" />
           <Property Name="UserBadgeID" Type="int" />
-          <Property Name="UserShowSplashScreen" Type="bit" />
+          <!--<Property Name="UserShowSplashScreen" Type="bit" />-->
           <Property Name="UserActivityPoints" Type="int" />
           <Property Name="UserForumPosts" Type="int" />
           <Property Name="UserBlogComments" Type="int" />
@@ -500,8 +500,8 @@
           <Property Name="UserLinkedInID" Type="nvarchar" MaxLength="100" />
           <Property Name="UserLogActivities" Type="bit" />
           <Property Name="UserPasswordRequestHash" Type="nvarchar" MaxLength="100" />
-          <Property Name="UserWebPartToolbarEnabled" Type="bit" />
-          <Property Name="UserWebPartToolbarPosition" Type="nvarchar" MaxLength="10" />
+          <!--<Property Name="UserWebPartToolbarEnabled" Type="bit" />-->
+          <!--<Property Name="UserWebPartToolbarPosition" Type="nvarchar" MaxLength="10" />-->
           <Property Name="UserInvalidLogOnAttempts" Type="int" />
           <Property Name="UserInvalidLogOnAttemptsHash" Type="nvarchar" MaxLength="100" />
           <Property Name="UserAvatarType" Type="nvarchar" MaxLength="200" />
@@ -518,7 +518,7 @@
           <Property Name="UserPreferredCurrencyID" Type="int" />
           <Property Name="UserPreferredShippingOptionID" Type="int" />
           <Property Name="UserPreferredPaymentOptionID" Type="int" />
-          <Property Name="UserDiscountLevelID" Type="int" />
+          <!--<Property Name="UserDiscountLevelID" Type="int" />-->
         </EntityType>
         <EntityType Name="CONTENT_Blog">
           <Key>
@@ -1292,7 +1292,7 @@
           <Property Type="String" Name="NodeHeadTags" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="NodeBodyElementAttributes" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="NodeInheritPageLevels" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="NodeChildNodesCount" />
+          <Property Type="Boolean" Name="NodeHasChildren" />
           <Property Type="Int32" Name="RequiresSSL" />
           <Property Type="Int32" Name="NodeLinkedNodeID" />
           <Property Type="Int32" Name="NodeOwner" />
@@ -1327,8 +1327,8 @@
           <Property Type="Boolean" Name="ClassIsCoupledClass" Nullable="false" />
           <Property Type="String" Name="ClassXmlSchema" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ClassFormDefinition" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="ClassEditingPageUrl" Nullable="false" MaxLength="450" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="ClassListPageUrl" Nullable="false" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassEditingPageUrl" Nullable="true" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClassListPageUrl" Nullable="true" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ClassNodeNameSource" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ClassTableName" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ClassViewPageUrl" MaxLength="450" FixedLength="false" Unicode="true" />
@@ -1463,7 +1463,7 @@
           <Property Type="Int32" Name="UserTimeZoneID" />
           <Property Type="Int32" Name="UserAvatarID" />
           <Property Type="Int32" Name="UserBadgeID" />
-          <Property Type="Boolean" Name="UserShowSplashScreen" />
+          <!--<Property Type="Boolean" Name="UserShowSplashScreen" />-->
           <Property Type="Int32" Name="UserActivityPoints" />
           <Property Type="Int32" Name="UserForumPosts" />
           <Property Type="Int32" Name="UserBlogComments" />
@@ -1489,8 +1489,8 @@
           <Property Type="String" Name="UserLinkedInID" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="UserLogActivities" />
           <Property Type="String" Name="UserPasswordRequestHash" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="Boolean" Name="UserWebPartToolbarEnabled" />
-          <Property Type="String" Name="UserWebPartToolbarPosition" MaxLength="10" FixedLength="false" Unicode="true" />
+          <!--<Property Type="Boolean" Name="UserWebPartToolbarEnabled" />-->
+          <!--<Property Type="String" Name="UserWebPartToolbarPosition" MaxLength="10" FixedLength="false" Unicode="true" />-->
           <Property Type="Int32" Name="UserInvalidLogOnAttempts" />
           <Property Type="String" Name="UserInvalidLogOnAttemptsHash" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="UserAvatarType" MaxLength="200" FixedLength="false" Unicode="true" />
@@ -1509,7 +1509,7 @@
           <Property Type="Int32" Name="UserPreferredCurrencyID" />
           <Property Type="Int32" Name="UserPreferredShippingOptionID" />
           <Property Type="Int32" Name="UserPreferredPaymentOptionID" />
-          <Property Type="Int32" Name="UserDiscountLevelID" />
+          <!--<Property Type="Int32" Name="UserDiscountLevelID" />-->
           <NavigationProperty Name="CMS_User" Relationship="kenticofreeModel.FK_CMS_UserSite_UserID_CMS_User" FromRole="CMS_UserSite" ToRole="CMS_User" />
         </EntityType>
         <Association Name="FK_Blog_Comment_CommentApprovedByUserID_CMS_User">
@@ -1972,7 +1972,7 @@
                 <ScalarProperty Name="NodeOwner" ColumnName="NodeOwner" />
                 <ScalarProperty Name="NodeLinkedNodeID" ColumnName="NodeLinkedNodeID" />
                 <ScalarProperty Name="RequiresSSL" ColumnName="RequiresSSL" />
-                <ScalarProperty Name="NodeChildNodesCount" ColumnName="NodeChildNodesCount" />
+                <ScalarProperty Name="NodeHasChildren" ColumnName="NodeHasChildren" />
                 <ScalarProperty Name="NodeInheritPageLevels" ColumnName="NodeInheritPageLevels" />
                 <ScalarProperty Name="NodeBodyElementAttributes" ColumnName="NodeBodyElementAttributes" />
                 <ScalarProperty Name="NodeHeadTags" ColumnName="NodeHeadTags" />
@@ -2095,8 +2095,8 @@
                 <ScalarProperty Name="UserAvatarType" ColumnName="UserAvatarType" />
                 <ScalarProperty Name="UserInvalidLogOnAttemptsHash" ColumnName="UserInvalidLogOnAttemptsHash" />
                 <ScalarProperty Name="UserInvalidLogOnAttempts" ColumnName="UserInvalidLogOnAttempts" />
-                <ScalarProperty Name="UserWebPartToolbarPosition" ColumnName="UserWebPartToolbarPosition" />
-                <ScalarProperty Name="UserWebPartToolbarEnabled" ColumnName="UserWebPartToolbarEnabled" />
+                <!--<ScalarProperty Name="UserWebPartToolbarPosition" ColumnName="UserWebPartToolbarPosition" />-->
+                <!--<ScalarProperty Name="UserWebPartToolbarEnabled" ColumnName="UserWebPartToolbarEnabled" />-->
                 <ScalarProperty Name="UserPasswordRequestHash" ColumnName="UserPasswordRequestHash" />
                 <ScalarProperty Name="UserLogActivities" ColumnName="UserLogActivities" />
                 <ScalarProperty Name="UserLinkedInID" ColumnName="UserLinkedInID" />
@@ -2122,7 +2122,7 @@
                 <ScalarProperty Name="UserBlogComments" ColumnName="UserBlogComments" />
                 <ScalarProperty Name="UserForumPosts" ColumnName="UserForumPosts" />
                 <ScalarProperty Name="UserActivityPoints" ColumnName="UserActivityPoints" />
-                <ScalarProperty Name="UserShowSplashScreen" ColumnName="UserShowSplashScreen" />
+                <!--<ScalarProperty Name="UserShowSplashScreen" ColumnName="UserShowSplashScreen" />-->
                 <ScalarProperty Name="UserBadgeID" ColumnName="UserBadgeID" />
                 <ScalarProperty Name="UserAvatarID" ColumnName="UserAvatarID" />
                 <ScalarProperty Name="UserTimeZoneID" ColumnName="UserTimeZoneID" />
@@ -2144,7 +2144,7 @@
           <EntitySetMapping Name="CMS_UserSite">
             <EntityTypeMapping TypeName="kenticofreeModel.CMS_UserSite">
               <MappingFragment StoreEntitySet="CMS_UserSite">
-                <ScalarProperty Name="UserDiscountLevelID" ColumnName="UserDiscountLevelID" />
+                <!--<ScalarProperty Name="UserDiscountLevelID" ColumnName="UserDiscountLevelID" />-->
                 <ScalarProperty Name="UserPreferredPaymentOptionID" ColumnName="UserPreferredPaymentOptionID" />
                 <ScalarProperty Name="UserPreferredShippingOptionID" ColumnName="UserPreferredShippingOptionID" />
                 <ScalarProperty Name="UserPreferredCurrencyID" ColumnName="UserPreferredCurrencyID" />

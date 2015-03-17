@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
 using System.Configuration;
 using System.Xml.Linq;
 using System.Collections.Specialized;
-using System.Transactions;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
-using System.Data.Objects;
 
 namespace wp2k {
 	class Program {
-		protected static string forbiddenChars = "[^0-9a-zA-Z_-]"; // Anything that's not alphanumeric, underscore, or dash
+		protected static string ForbiddenChars = "[^0-9a-zA-Z_-]"; // Anything that's not alphanumeric, underscore, or dash
 		// Read config file.
-		protected static AppSettingsReader reader = new AppSettingsReader();
-		protected static NameValueCollection config = ConfigurationManager.AppSettings;
+		protected static AppSettingsReader Reader = new AppSettingsReader();
+		protected static NameValueCollection Config = ConfigurationManager.AppSettings;
 		// Read WPXML file and get relevant namespaces.
-		protected static XDocument wpxml = XDocument.Load(config.Get("file"));
-		protected static XNamespace wpns = "http://wordpress.org/export/1.1/";
-		protected static XNamespace encoded = "http://purl.org/rss/1.0/modules/content/";
-		protected static XNamespace dc = "http://purl.org/dc/elements/1.1/";
+		protected static XDocument Wpxml = XDocument.Load(Config.Get("file"));
+		protected static XNamespace Wpns = "http://wordpress.org/export/1.2/";
+		protected static XNamespace Encoded = "http://purl.org/rss/1.0/modules/content/";
+		protected static XNamespace Dc = "http://purl.org/dc/elements/1.1/";
 		// Some common information that doesn't like to be parsed on the fly
-		protected static int blogId = Int32.Parse(config.Get("kenticoBlogId"));
-		protected static int siteId = Int32.Parse(config.Get("siteId"));
-		protected static int nodeOwnerId = Int32.Parse(config.Get("nodeOwnerId"));
+		protected static int BlogId = Int32.Parse(Config.Get("kenticoBlogId"));
+		protected static int SiteId = Int32.Parse(Config.Get("siteId"));
+		protected static int NodeOwnerId = Int32.Parse(Config.Get("nodeOwnerId"));
 
-		static void Main(string[] args) {
-			using (kenticofreeEntities context = new kenticofreeEntities()) {
-				ProcessTags(context);
-				ProcessCategories(context);
-				ProcessAuthors(context);
+		static void Main() {
+			using (var context = new kenticofreeEntities()) {
+                ProcessTags(context);
+                ProcessCategories(context);
+                ProcessAuthors(context);
 				ProcessPosts(context);
 			}
 		}
@@ -43,16 +41,24 @@ namespace wp2k {
 		 */
 		protected static void ProcessTags(kenticofreeEntities context) {
 			Console.WriteLine("Adding tags to database.");
-
-			CMS_TagGroup tg = GetTagGroup(context);
-			var tags = (from t in wpxml.Descendants(wpns + "tag")
+            var ti = CultureInfo.CurrentCulture.TextInfo;
+			var tg = GetTagGroup(context);
+			var tags = (from t in Wpxml.Descendants("category").Where(x => x.Attribute("domain").Value.Equals("post_tag")).Distinct()
 						select new CMS_Tag {
-							TagName = t.Element(wpns + "tag_slug").Value,
+							TagName = ti.ToTitleCase(t.Value.ToLower()),
 							TagGroupID = tg.TagGroupID,
 							TagCount = 0
-						});
+						}).ToList();
 
-			foreach (CMS_Tag tag in tags) {
+		    var list = tags.Select(x => x.TagName).Distinct();
+		    var tagList = list.Select(item => new CMS_Tag
+		    {
+		        TagName = item, TagGroupID = tg.TagGroupID, TagCount = 0
+		    }).ToList();
+
+
+            foreach (var tag in tagList)
+            {
 				// Don't add an existing tag
 				var exists = (from t in context.CMS_Tag
 							  where t.TagName == tag.TagName && t.TagGroupID == tag.TagGroupID
@@ -73,56 +79,57 @@ namespace wp2k {
 		 */
 		protected static void ProcessCategories(kenticofreeEntities context) {
 			Console.WriteLine("Adding categories to database.");
-			var categories = (from c in wpxml.Descendants(wpns + "category")
-							  select new CMS_Category {
-								  CategoryCount = 0,
-								  CategoryDisplayName = c.Element(wpns + "cat_name").Value,
-								  CategoryName = c.Element(wpns + "category_nicename").Value,
-								  CategoryDescription = c.Element(wpns + "cat_name").Value,
-								  CategoryEnabled = true,
-								  CategoryGUID = Guid.NewGuid(),
-								  CategoryLastModified = DateTime.Now,
-								  CategorySiteID = Int32.Parse(config.Get("siteId")),
-								  CategoryNamePath = "/" + c.Element(wpns + "category_nicename").Value,
-								  CategoryLevel = 0,
-								  CategoryParentID = null
-							  });
-			
-			CMS_Category lastCat = null;
-			// TODO: Add category nesting (not doing it right now, because our export doesn't nest categories)
-			foreach (CMS_Category cat in categories) {
-				// Make sure we don't add a category that already exists
-				var exists = (from c in context.CMS_Category
-							  where c.CategoryName == cat.CategoryName
-							  select c
-							);
-				
-				if (!exists.Any()) {
-					if (lastCat == null) {
-						lastCat = (from o in context.CMS_Category
-								   where o.CategorySiteID == cat.CategorySiteID && o.CategoryLevel == cat.CategoryLevel
-								   orderby o.CategoryOrder descending
-								   select o
-								).FirstOrDefault();
-						if (lastCat == null) {
-							lastCat = new CMS_Category() { CategoryOrder = 0 };
-						}
-					}
+            var categories = (from c in Wpxml.Descendants("category").Where(x => x.Attribute("domain").Value.Equals("category"))
+                              select new CMS_Category
+                              {
+                                  CategoryCount = 0,
+                                  CategoryDisplayName = c.Value,
+                                  CategoryName = c.Value,
+                                  CategoryDescription = c.Value,
+                                  CategoryEnabled = true,
+                                  CategoryGUID = Guid.NewGuid(),
+                                  CategoryLastModified = DateTime.Now,
+                                  CategorySiteID = Int32.Parse(Config.Get("siteId")),
+                                  CategoryNamePath = "/" + c.Value.ToLowerInvariant(),
+                                  CategoryLevel = 0,
+                                  CategoryParentID = null
+                              });
 
-					cat.CategoryOrder = lastCat.CategoryOrder + 1;
+            CMS_Category lastCat = null;
+            // TODO: Add category nesting (not doing it right now, because our export doesn't nest categories)
+            foreach (var cat in categories)
+            {
+                // Make sure we don't add a category that already exists
+                var exists = (from c in context.CMS_Category
+                              where c.CategoryName == cat.CategoryName
+                              select c
+                            );
 
-					/* We can't make the IDPath until we get an ID, and I can't find how Kentico does this, 
-					 * so we have to do it the long way. */
-					context.CMS_Category.AddObject(cat);
-					context.SaveChanges(); // Add the category
-					// Bulid the path and update our category
-					cat.CategoryIDPath = "/" + cat.CategoryID.ToString().PadLeft(8, '0');
-					context.SaveChanges();
+                if (!exists.Any())
+                {
+                    if (lastCat == null)
+                    {
+                        lastCat = (from o in context.CMS_Category
+                                   where o.CategorySiteID == cat.CategorySiteID && o.CategoryLevel == cat.CategoryLevel
+                                   orderby o.CategoryOrder descending
+                                   select o
+                            ).FirstOrDefault() ?? new CMS_Category { CategoryOrder = 0 };
+                    }
 
-					// Let's save the last inserted category, so we don't have to access the database so much
-					lastCat = cat;
-				}
-			}
+                    cat.CategoryOrder = lastCat.CategoryOrder + 1;
+
+                    /* We can't make the IDPath until we get an ID, and I can't find how Kentico does this, 
+                     * so we have to do it the long way. */
+                    context.CMS_Category.AddObject(cat);
+                    context.SaveChanges(); // Add the category
+                    // Bulid the path and update our category
+                    cat.CategoryIDPath = "/" + cat.CategoryID.ToString(CultureInfo.InvariantCulture).PadLeft(8, '0');
+                    context.SaveChanges();
+
+                    // Let's save the last inserted category, so we don't have to access the database so much
+                    lastCat = cat;
+                }
+            }
 		}
 
 		/**
@@ -137,23 +144,24 @@ namespace wp2k {
 		 * @return CMS_TagGroup
 		 */
 		protected static CMS_TagGroup GetTagGroup(kenticofreeEntities context) {
-			string groupName = config.Get("tagGroupName");
+			var groupName = Config.Get("tagGroupName");
 			var tg = (from t in context.CMS_TagGroup
 								where t.TagGroupName == groupName
 								select t
 							);
 
 			if (tg.Any()) {
-				return (CMS_TagGroup)tg.First();
+				return tg.First();
 			}
 			else {
-				Regex forbidden = new Regex(forbiddenChars);
-				CMS_TagGroup group = new CMS_TagGroup() {
+				var forbidden = new Regex(ForbiddenChars);
+				var group = new CMS_TagGroup
+				{
 					TagGroupName = forbidden.Replace(groupName, ""),
 					TagGroupDisplayName = groupName,
 					TagGroupDescription = groupName,
 					TagGroupGUID = Guid.NewGuid(),
-					TagGroupSiteID = Int32.Parse(config.Get("siteId")),
+					TagGroupSiteID = Int32.Parse(Config.Get("siteId")),
 					TagGroupIsAdHoc = false,
 					TagGroupLastModified = DateTime.Now
 				};
@@ -179,31 +187,33 @@ namespace wp2k {
 		protected static void ProcessAuthors(kenticofreeEntities context)
 		{
 			Console.WriteLine("Adding authors to database.");
-			var authors = (from a in wpxml.Descendants(wpns + "author")
-						   where a.Element(wpns + "author_login").Value != "admin" // Ignore the "admin" user, since we already have an admin in Kentico (and "admin" is a restricted username)
+
+            var authors = (from a in Wpxml.Descendants(Wpns + "author")
+						   where a.Element(Wpns + "author_login").Value != "admin" // Ignore the "admin" user, since we already have an admin in Kentico (and "admin" is a restricted username)
 							   select new CMS_User {
-								   UserName = a.Element(wpns + "author_login").Value,
-								   FirstName = a.Element(wpns + "author_first_name").Value, // CDATA element
+								   UserName = a.Element(Wpns + "author_login").Value + "@laughlin.com",
+								   FirstName = a.Element(Wpns + "author_first_name").Value, // CDATA element
 								   MiddleName = "", // Prevent entry as "NULL"
-								   LastName = a.Element(wpns + "author_last_name").Value, // CDATA element
-								   FullName = a.Element(wpns + "author_display_name").Value, // CDATA element
-								   Email = a.Element(wpns + "author_email").Value,
+								   LastName = a.Element(Wpns + "author_last_name").Value, // CDATA element
+								   FullName = a.Element(Wpns + "author_display_name").Value, // CDATA element
+								   Email = a.Element(Wpns + "author_email").Value,
 								   UserGUID = Guid.NewGuid(),
 								   PreferredCultureCode = "en-US",
 								   PreferredUICultureCode = "en-US",
 								   UserEnabled = true,
 								   //UserIsEditor = true,
 								   UserIsEditor = false,
-								   UserIsGlobalAdministrator = false,
+								   UserIsGlobalAdministrator = true,
 								   UserIsDomain = false,
 								   UserIsExternal = false,
 								   UserIsHidden = false,
 								   UserPasswordFormat = "SHA2SALT",
 								   UserCreated = DateTime.Now,
-								   UserLastModified = DateTime.Now
+								   UserLastModified = DateTime.Now,
+                                   UserSiteManagerDisabled = false
 							   });
 
-			foreach (CMS_User author in authors) {
+			foreach (var author in authors) {
 				var exists = (from a in context.CMS_User
 							  where a.UserName == author.UserName
 							  select a
@@ -212,36 +222,40 @@ namespace wp2k {
 				// Don't add ones that already exist
 				if (!exists.Any()) {
 					// I don't like blank passwords for so many users, especially since most won't ever sign in. So let's add a fairly simple password to keep the accounts from just being accessed with zero effort
-					author.UserPassword = GetHash("addedByWP2k2013" + author.UserGUID);
+					author.UserPassword = GetHash("Laughlin2014" + author.UserGUID);
 
 					// Add and save to get the UserID
 					context.CMS_User.AddObject(author);
 					context.SaveChanges();
 
 					// Create a user profile
-					CMS_UserSettings settings = new CMS_UserSettings() {
+					var settings = new CMS_UserSettings
+					{
 						UserActivationDate = DateTime.Now,
-						UserShowSplashScreen = true,
+                        //UserShowSplashScreen = true,
 						UserSettingsUserGUID = author.UserGUID,
 						UserSettingsUserID = author.UserID,
 						UserBlogPosts = 0, // Initialize to 0 so we can increment easily
 						UserWaitingForApproval = false,
-						UserWebPartToolbarEnabled = true,
-						UserWebPartToolbarPosition = "right",
-						UserBadgeID = 43
+                        //UserWebPartToolbarEnabled = true,
+                        //UserWebPartToolbarPosition = "right",
+						UserBadgeID = 43,
+                        UserLogActivities = true
 					};
 
 					// Connect the user with a role
-					CMS_UserRole role = new CMS_UserRole() {
+					var role = new CMS_UserRole
+					{
 						UserID = author.UserID,
 						//RoleID = 6 // CMS Editors
-						RoleID = 2 // CMS Basic User (using this for testing, because the free version doesn't allow for more editors and will completely explode if we add more)
+						RoleID = 12 // CMS Basic User (using this for testing, because the free version doesn't allow for more editors and will completely explode if we add more)
 					};
 
 					// Connect the user with the site
-					CMS_UserSite site = new CMS_UserSite() {
+					var site = new CMS_UserSite
+					{
 						UserID = author.UserID,
-						SiteID = siteId
+						SiteID = SiteId
 					};
 
 					context.CMS_UserSettings.AddObject(settings);
@@ -260,50 +274,52 @@ namespace wp2k {
 		protected static void ProcessPosts(kenticofreeEntities context) {
 			Console.WriteLine("Adding posts to database.");
 			// Gather list of Posts and make them each Entities
-			var posts = (from i in wpxml.Descendants("item")
-							where i.Element(wpns + "post_type").Value == "post" && i.Element(wpns + "status").Value == "publish"
+			var posts = (from i in Wpxml.Descendants("item")
+							where i.Element(Wpns + "post_type").Value == "post" && i.Element(Wpns + "status").Value == "publish"
 							select new CONTENT_BlogPost {
-								BlogPostID = Int32.Parse(i.Element(wpns + "post_id").Value),
+								BlogPostID = Int32.Parse(i.Element(Wpns + "post_id").Value),
 								BlogPostTitle = i.Element("title").Value,
-								BlogPostDate = DateTime.Parse(i.Element(wpns + "post_date").Value),
+								BlogPostDate = DateTime.Parse(i.Element(Wpns + "post_date").Value),
 								BlogPostSummary = (String.IsNullOrEmpty(i.Element("description").Value) ? i.Element("title").Value : i.Element("description").Value),
 								BlogPostAllowComments = true,
-								BlogPostBody = i.Element(encoded + "encoded").Value.Replace("\n", "<br/>"), // CDATA element
+								BlogPostBody = i.Element(Encoded + "encoded").Value.Replace("\n", "<br/>"), // CDATA element
 								BlogLogActivity = true
 							});
 
 			// Get the blog by the ID set in the settings
-			CMS_Tree blog = (from b in context.CONTENT_Blog
+			var blog = (from b in context.CONTENT_Blog
 								join d in context.CMS_Document on b.BlogID equals d.DocumentForeignKeyValue
 								join t in context.CMS_Tree on d.DocumentNodeID equals t.NodeID
-								where b.BlogID == blogId && t.NodeClassID == 3423 //Blog class ID, otherwise we end up with a bunch of stuff that aren't blogs
+								where b.BlogID == BlogId && t.NodeClassID == 4614 //Blog class ID, otherwise we end up with a bunch of stuff that aren't blogs
 								select t).FirstOrDefault();
 			if (blog == null) {
-				Console.WriteLine("No blog with the ID of " + blogId + " detected. Adding new blog.");
-				CONTENT_Blog b = new CONTENT_Blog() {
+				Console.WriteLine("No blog with the ID of " + BlogId + " detected. Adding new blog.");
+				var b = new CONTENT_Blog
+				{
 							BlogName = "BlogImport",
 							BlogDescription = "The Imported Blog",
 							BlogOpenCommentsFor = "-1",
 							BlogEnableTrackbacks = true
 				};
 
-				CMS_Class blogClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogPost").First();
-				CMS_Tree root = context.CMS_Tree.Where(x => x.NodeClassID == 1095).Where(x => x.NodeSiteID == siteId).First();
+				var blogClass = context.CMS_Class.First(x => x.ClassName == "CMS.BlogPost");
+				var root = context.CMS_Tree.Where(x => x.NodeClassID == 1095).First(x => x.NodeSiteID == SiteId);
 
-				blog = new CMS_Tree() {
+				blog = new CMS_Tree
+				{
 					NodeAliasPath = "/" + b.BlogName,
 					NodeName = b.BlogName,
 					NodeAlias = b.BlogName,
 					NodeClassID = blogClass.ClassID,
-					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")),
+					NodeLevel = Int32.Parse(Config.Get("kenticoBlogLevel")),
 					NodeACLID = 1, // Default ACL ID
-					NodeSiteID = siteId,
-					NodeOwner = nodeOwnerId,
+					NodeSiteID = SiteId,
+					NodeOwner = NodeOwnerId,
 					NodeOrder = 100,
 					NodeGUID = Guid.NewGuid(),
 					NodeInheritPageLevels = "",
 					NodeTemplateForAllCultures = true,
-					NodeChildNodesCount = 0,
+                    //NodeChildNodesCount = 0,
 					NodeParentID = (root != null ? root.NodeID : 0)
 				};
 
@@ -315,8 +331,8 @@ namespace wp2k {
 			}
 
 			Console.WriteLine("Connecting categories, tags, and comments to posts. This may take a while.");
-			foreach (CONTENT_BlogPost post in posts) {
-				CMS_Document postDoc = ImportPost(context, blog, post);
+			foreach (var post in posts) {
+				var postDoc = ImportPost(context, blog, post);
 				LinkCategoriesAndTags(context, postDoc, post);
 				ImportComments(context, postDoc);
 			}
@@ -351,7 +367,7 @@ namespace wp2k {
 							  select t
 							);
 
-			foreach (CMS_Tree month in blogMonths) {
+			foreach (var month in blogMonths) {
 				context.ExecuteStoreCommand("exec Proc_CMS_Tree_OrderDateAsc @NodeParentID={0}",month.NodeID);
 			}
 		}
@@ -369,22 +385,23 @@ namespace wp2k {
 		 */
 		protected static void LinkCategoriesAndTags(kenticofreeEntities context, CMS_Document postDoc, CONTENT_BlogPost post) {
 			
-			var xml = (from c in wpxml.Descendants("item")
-							  where Int32.Parse(c.Element(wpns + "post_id").Value) == post.BlogPostID
+            var ti = CultureInfo.CurrentCulture.TextInfo;
+			var xml = (from c in Wpxml.Descendants("item")
+							  where Int32.Parse(c.Element(Wpns + "post_id").Value) == post.BlogPostID
 							  select c
 							).Single();
 			var categories = (from c in xml.Descendants("category")
 							  select new {
 								  Domain = c.Attribute("domain").Value,
-								  Nicename = c.Attribute("nicename").Value
+                                  Nicename = ti.ToTitleCase(c.Value.ToLower())
 							  }
 							);
 
 			foreach (var cat in categories) {
 				
 				if (cat.Domain == "post_tag") {
-					CMS_TagGroup tg = GetTagGroup(context);
-					CMS_Tag tag = (from t in context.CMS_Tag
+					var tg = GetTagGroup(context);
+					var tag = (from t in context.CMS_Tag
 								   where t.TagName == cat.Nicename && t.TagGroupID == tg.TagGroupID
 								   select t
 								).SingleOrDefault();
@@ -398,7 +415,7 @@ namespace wp2k {
 					tag.TagCount++;
 				}
 				else if (cat.Domain == "category") {
-					CMS_Category category = (from c in context.CMS_Category
+					var category = (from c in context.CMS_Category
 											 where c.CategoryName == cat.Nicename
 											 select c
 											).SingleOrDefault();
@@ -423,33 +440,34 @@ namespace wp2k {
 		 * @return CMS_Document
 		 */
 		protected static CMS_Document ImportPost(kenticofreeEntities context, CMS_Tree blog, CONTENT_BlogPost post) {
-			Regex forbidden = new Regex(forbiddenChars);
-			Regex consolidateDashes = new Regex("[-]{2}");
+			var forbidden = new Regex(ForbiddenChars);
+			var consolidateDashes = new Regex("[-]{2}");
 
 			/* We want to preserve the IDs of the Posts for linking, but EF won't let us turn on IDENTITY_INSERT
 			* with its available methods (ExecuteStoreCommand and SaveChanges are different connections, it seems). 
 			* So we have to do it the old fashioned way.
 			*/
-			object[] values = new object[]{
-							post.BlogPostID.ToString(),
-							post.BlogPostTitle,
-							post.BlogPostDate.Date.ToString("yyyy-MM-dd HH:mm:ss"),
-							post.BlogPostSummary,
-							post.BlogPostAllowComments,
-							post.BlogPostBody,
-							post.BlogLogActivity
-						};
+			object[] values =
+			{
+			    post.BlogPostID.ToString(),
+			    post.BlogPostTitle,
+			    post.BlogPostDate.Date.ToString("yyyy-MM-dd HH:mm:ss"),
+			    post.BlogPostSummary,
+			    post.BlogPostAllowComments,
+			    post.BlogPostBody,
+			    post.BlogLogActivity
+			};
 
 			/* We'll use MERGE here, so that we can handle existing entries.
 			 * The "xmlTrumpsDb" config switch will allow a choice between nuking what's in the DB
 			 * or preserving it.
 			 */
-			string cmd = "SET IDENTITY_INSERT CONTENT_BlogPost ON; ";
+			var cmd = "SET IDENTITY_INSERT CONTENT_BlogPost ON; ";
 			cmd += "MERGE CONTENT_BlogPost ";
 			cmd += "USING (VALUES ({0},{1},{2},{3},{4},{5},{6})) as temp(BlogPostID, BlogPostTitle, BlogPostDate, BlogPostSummary, BlogPostAllowComments, BlogPostBody, BlogLogActivity) ";
 			cmd += "ON CONTENT_BlogPost.BlogPostID = temp.BlogPostID ";
 			// To nuke or not to nuke, that is the question...
-			if (config.Get("xmlTrumpsDb") == "true") {
+			if (Config.Get("xmlTrumpsDb") == "true") {
 				cmd += "WHEN MATCHED THEN ";
 				cmd += "UPDATE SET CONTENT_BlogPost.BlogPostTitle = temp.BlogPostTitle, CONTENT_BlogPost.BlogPostDate = temp.BlogPostDate, CONTENT_BlogPost.BlogPostSummary = temp.BlogPostSummary, CONTENT_BlogPost.BlogPostAllowComments = temp.BlogPostAllowComments, CONTENT_BlogPost.BlogPostBody = temp.BlogPostBody, CONTENT_BlogPost.BlogLogActivity = temp.BlogLogActivity ";
 			}
@@ -459,50 +477,51 @@ namespace wp2k {
 			context.ExecuteStoreCommand(cmd, values);
 
 			// See if there's a BlogMonth entry for the month this post is for
-			CMS_Tree month = GetBlogMonth(context, post, blog);
+			var month = GetBlogMonth(context, post, blog);
 
-			CMS_Class blogClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogPost").First();
+			var blogClass = context.CMS_Class.First(x => x.ClassName == "CMS.BlogPost");
 
-			CMS_Tree treeNode = (from t in context.CMS_Tree
+			var treeNode = (from t in context.CMS_Tree
 								 join d in context.CMS_Document on t.NodeID equals d.DocumentNodeID
-								 where d.DocumentForeignKeyValue == post.BlogPostID && t.NodeClassID == 3423
+								 where d.DocumentForeignKeyValue == post.BlogPostID && t.NodeClassID == 4614
 								 select t).FirstOrDefault();
 
 			// Add a new node only if one doesn't already exist
 			if (treeNode == null) {
-				string nodeAlias = consolidateDashes.Replace(forbidden.Replace(post.BlogPostTitle, "-"), "-");
+				var nodeAlias = consolidateDashes.Replace(forbidden.Replace(post.BlogPostTitle, "-"), "-");
 				nodeAlias = (nodeAlias.Length > 50 ? nodeAlias.Substring(0, 50) : nodeAlias); // Truncate the alias to avoid SQL Server errors
 
 				// Create the Tree Node for the post and add it in
-				treeNode = new CMS_Tree() {
+				treeNode = new CMS_Tree
+				{
 					NodeAliasPath = string.Format("{0}/{1}", month.NodeAliasPath, forbidden.Replace(post.BlogPostTitle, "-")),
 					NodeName = post.BlogPostTitle,
 					NodeAlias = nodeAlias,
 					NodeClassID = blogClass.ClassID,
 					NodeParentID = month.NodeID,
-					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")) + 2,
+					NodeLevel = Int32.Parse(Config.Get("kenticoBlogLevel")) + 2,
 					NodeACLID = 1, // Default ACL ID
-					NodeSiteID = siteId,
+					NodeSiteID = SiteId,
 					NodeGUID = Guid.NewGuid(),
 					NodeInheritPageLevels = "",
 					NodeTemplateForAllCultures = true,
-					NodeChildNodesCount = 0
+                    //NodeChildNodesCount = 0
 				};
 
-				CMS_User author = GetAuthor(context, post);
+				var author = GetAuthor(context, post);
 				treeNode.NodeOwner = author.UserID;
 
 				context.CMS_Tree.AddObject(treeNode);
 				treeNode.NodeOrder = GetNodeOrder(context, treeNode);
-				month.NodeChildNodesCount++; // Increment the child nodes count, so the new post will display in the CMS
-				blog.NodeChildNodesCount++; // Increment the blog's child nodes count, too.
+                //month.NodeChildNodesCount++; // Increment the child nodes count, so the new post will display in the CMS
+                //blog.NodeChildNodesCount++; // Increment the blog's child nodes count, too.
 				context.SaveChanges();
 			}
 
-			CMS_TagGroup tagGroup = GetTagGroup(context);
+			var tagGroup = GetTagGroup(context);
 
 			// Create the document and add it into the database
-			CMS_Document postDoc = AddDocument(context, treeNode, post.BlogPostID, tagGroup.TagGroupID);
+			var postDoc = AddDocument(context, treeNode, post.BlogPostID, tagGroup.TagGroupID);
 
 			return postDoc;
 		}
@@ -515,13 +534,13 @@ namespace wp2k {
 		 * @return CMS_User
 		 */
 		protected static CMS_User GetAuthor(kenticofreeEntities context, CONTENT_BlogPost post) {
-			var authorname = (from p in wpxml.Descendants("item")
-							  where Int32.Parse(p.Element(wpns + "post_id").Value) == post.BlogPostID
+			var authorname = (from p in Wpxml.Descendants("item")
+							  where Int32.Parse(p.Element(Wpns + "post_id").Value) == post.BlogPostID
 							  select p
-							).SingleOrDefault().Element(dc + "creator").Value;
+							).SingleOrDefault().Element(Dc + "creator").Value;
 
-			CMS_User kenticoUser = (from p in context.CMS_User
-							   where p.UserName == authorname
+			var kenticoUser = (from p in context.CMS_User
+							   where p.UserName == authorname+"@laughlin.com"
 							   select p
 							).SingleOrDefault();
 
@@ -547,22 +566,22 @@ namespace wp2k {
 		 */
 		protected static void ImportComments(kenticofreeEntities context, CMS_Document postDoc) {
 			// Get the comments from the XML
-			var comments = (from c in wpxml.Descendants("item").Where(x => x.Element(wpns + "post_id").Value == postDoc.DocumentForeignKeyValue.ToString()).Descendants(wpns + "comment")
+			var comments = (from c in Wpxml.Descendants("item").Where(x => x.Element(Wpns + "post_id").Value == postDoc.DocumentForeignKeyValue.ToString()).Descendants(Wpns + "comment")
 							select new Blog_Comment {
-								CommentID = Int32.Parse(c.Element(wpns + "comment_id").Value),
-								CommentUserName = c.Element(wpns + "comment_author").Value,
-								CommentEmail = c.Element(wpns + "comment_author_email").Value,
-								CommentUrl = c.Element(wpns + "comment_author_url").Value,
-								CommentApproved = (c.Element(wpns + "comment_approved").Value != "0"), // Convert "0"/"1" to false/true
-								CommentDate = DateTime.Parse(c.Element(wpns + "comment_date").Value),
-								CommentText = c.Element(wpns + "comment_content").Value,
-								CommentIsTrackBack = (!String.IsNullOrEmpty(c.Element(wpns + "comment_type").Value) && c.Element(wpns + "comment_type").Value != "Comment"), // if comment_type has a value (not NullOrEmpty), AND that value is not "Comment", then it's a ping/trackback; otherwise it's just a comment
+								CommentID = Int32.Parse(c.Element(Wpns + "comment_id").Value),
+								CommentUserName = c.Element(Wpns + "comment_author").Value,
+								CommentEmail = c.Element(Wpns + "comment_author_email").Value,
+								CommentUrl = c.Element(Wpns + "comment_author_url").Value,
+								CommentApproved = (c.Element(Wpns + "comment_approved").Value != "0"), // Convert "0"/"1" to false/true
+								CommentDate = DateTime.Parse(c.Element(Wpns + "comment_date").Value),
+								CommentText = c.Element(Wpns + "comment_content").Value,
+								CommentIsTrackBack = (!String.IsNullOrEmpty(c.Element(Wpns + "comment_type").Value) && c.Element(Wpns + "comment_type").Value != "Comment"), // if comment_type has a value (not NullOrEmpty), AND that value is not "Comment", then it's a ping/trackback; otherwise it's just a comment
 								CommentPostDocumentID = postDoc.DocumentID
 							}
 			);
 
 			// Insert them into the database
-			foreach (Blog_Comment comment in comments) {
+			foreach (var comment in comments) {
 				context.Blog_Comment.AddObject(comment);
 			}
 
@@ -581,7 +600,7 @@ namespace wp2k {
 		 */
 		protected static CMS_Tree GetBlogMonth(kenticofreeEntities context, CONTENT_BlogPost post, CMS_Tree blog) {
 
-			Regex forbidden = new Regex(forbiddenChars);
+			var forbidden = new Regex(ForbiddenChars);
 
 			// Does one exist?
 			var monthQuery = (from m in context.CONTENT_BlogMonth
@@ -590,11 +609,12 @@ namespace wp2k {
 
 			CMS_Tree treeNode = null;
 			// Find out the classID of the CMS.BlogMonth document type
-			CMS_Class monthClass = context.CMS_Class.Where(x => x.ClassName == "CMS.BlogMonth").First();
+			var monthClass = context.CMS_Class.First(x => x.ClassName == "CMS.BlogMonth");
 
 			// If not, make a new one
 			if (monthQuery.Any() == false) {
-				CONTENT_BlogMonth month = new CONTENT_BlogMonth() {
+				var month = new CONTENT_BlogMonth
+				{
 					BlogMonthName = post.BlogPostDate.ToString("MMMM yyyy"),
 					BlogMonthStartingDate = new DateTime(post.BlogPostDate.Year, post.BlogPostDate.Month, 01)
 				};
@@ -602,20 +622,23 @@ namespace wp2k {
 				context.CONTENT_BlogMonth.AddObject(month);
 
 				// Add the corresponding tree node
-				treeNode = new CMS_Tree() {
-					NodeAliasPath = string.Format("{0}/{1}/{2}", config.Get("kenticoBlogPath"), forbidden.Replace(blog.NodeName, "-"), forbidden.Replace(month.BlogMonthName, "-")),
+				treeNode = new CMS_Tree
+				{
+					NodeAliasPath = string.Format("{0}/{1}/{2}", Config.Get("kenticoBlogPath"), forbidden.Replace(blog.NodeName, "-"), forbidden.Replace(month.BlogMonthName, "-")),
 					NodeTemplateForAllCultures = true,
 					NodeName = month.BlogMonthName,
 					NodeAlias = forbidden.Replace(month.BlogMonthName, "-"),
 					NodeClassID = monthClass.ClassID,
 					NodeParentID = blog.NodeID,
-					NodeLevel = Int32.Parse(config.Get("kenticoBlogLevel")) + 1,
+					NodeLevel = Int32.Parse(Config.Get("kenticoBlogLevel")) + 1,
 					NodeACLID = 1, // Default ACL ID
-					NodeSiteID = Int32.Parse(config.Get("siteId")),
+					NodeSiteID = Int32.Parse(Config.Get("siteId")),
 					NodeGUID = Guid.NewGuid(),
-					NodeOwner = Int32.Parse(config.Get("nodeOwnerId")),
+					NodeOwner = Int32.Parse(Config.Get("nodeOwnerId")),
 					NodeInheritPageLevels = "",
-					NodeChildNodesCount = 0 // Start out with a number, instead of NULL, so we can easily increment it
+                    NodeOrder = 2,
+                    NodeHasChildren = true
+                    //NodeChildNodesCount = 0 // Start out with a number, instead of NULL, so we can easily increment it
 				};
 
 				treeNode.NodeOrder = GetNodeOrder(context, treeNode);
@@ -627,7 +650,7 @@ namespace wp2k {
 			}
 			// If so, use it
 			else {
-				CONTENT_BlogMonth month = monthQuery.First();
+				var month = monthQuery.First();
 				treeNode = (from t in context.CMS_Tree
 							join d in context.CMS_Document on t.NodeID equals d.DocumentNodeID
 							join b in context.CONTENT_BlogMonth on d.DocumentForeignKeyValue equals b.BlogMonthID
@@ -649,7 +672,8 @@ namespace wp2k {
 		 */
 		protected static CMS_Document AddDocument(kenticofreeEntities context, CMS_Tree treeNode, int itemId, int tagGroupId = 0) {
 			// Create the document and add it into the database
-			CMS_Document doc = new CMS_Document() {
+			var doc = new CMS_Document
+			{
 				DocumentName = treeNode.NodeName,
 				DocumentNamePath = treeNode.NodeAliasPath,
 				DocumentForeignKeyValue = itemId,
@@ -689,8 +713,8 @@ namespace wp2k {
 		 * @return int
 		 */
 		protected static int GetNodeOrder(kenticofreeEntities context, CMS_Tree tree) {
-			int nodeOrder = 1;
-			CMS_Tree lastNode = (from node in context.CMS_Tree
+			var nodeOrder = 1;
+			var lastNode = (from node in context.CMS_Tree
 								 where node.NodeParentID == tree.NodeParentID
 								 orderby node.NodeOrder descending
 								 select node).FirstOrDefault();
@@ -708,14 +732,14 @@ namespace wp2k {
 		 * CMS.GlobalHelper.SecurityHelper.GetSHA2Hash() and ValidationHelper.GetStringFromHash()
 		 */
 		private static string GetHash(string inputData) {
-			SHA256Managed sh = new SHA256Managed();
-			byte[] bytes = Encoding.Default.GetBytes(inputData);
-			byte[] hashBytes = sh.ComputeHash(bytes);
+			var sh = new SHA256Managed();
+			var bytes = Encoding.Default.GetBytes(inputData);
+			var hashBytes = sh.ComputeHash(bytes);
 
-			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < hashBytes.Length; i++) {
-				byte b = hashBytes[i];
-				stringBuilder.Append(string.Format("{0:x2}", b));
+			var stringBuilder = new StringBuilder();
+			foreach (var b in hashBytes)
+			{
+			    stringBuilder.Append(string.Format("{0:x2}", b));
 			}
 
 			return stringBuilder.ToString();

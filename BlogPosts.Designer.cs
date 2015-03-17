@@ -2039,8 +2039,6 @@ namespace wp2k
         /// <param name="classIsCoupledClass">Initial value of the ClassIsCoupledClass property.</param>
         /// <param name="classXmlSchema">Initial value of the ClassXmlSchema property.</param>
         /// <param name="classFormDefinition">Initial value of the ClassFormDefinition property.</param>
-        /// <param name="classEditingPageUrl">Initial value of the ClassEditingPageUrl property.</param>
-        /// <param name="classListPageUrl">Initial value of the ClassListPageUrl property.</param>
         /// <param name="classNodeNameSource">Initial value of the ClassNodeNameSource property.</param>
         /// <param name="classTableName">Initial value of the ClassTableName property.</param>
         /// <param name="classShowAsSystemTable">Initial value of the ClassShowAsSystemTable property.</param>
@@ -2048,7 +2046,7 @@ namespace wp2k
         /// <param name="classGUID">Initial value of the ClassGUID property.</param>
         /// <param name="classIsCustomTable">Initial value of the ClassIsCustomTable property.</param>
         /// <param name="classLoadGeneration">Initial value of the ClassLoadGeneration property.</param>
-        public static CMS_Class CreateCMS_Class(global::System.Int32 classID, global::System.String classDisplayName, global::System.String className, global::System.Boolean classUsesVersioning, global::System.Boolean classIsDocumentType, global::System.Boolean classIsCoupledClass, global::System.String classXmlSchema, global::System.String classFormDefinition, global::System.String classEditingPageUrl, global::System.String classListPageUrl, global::System.String classNodeNameSource, global::System.String classTableName, global::System.Boolean classShowAsSystemTable, global::System.DateTime classLastModified, global::System.Guid classGUID, global::System.Boolean classIsCustomTable, global::System.Int32 classLoadGeneration)
+        public static CMS_Class CreateCMS_Class(global::System.Int32 classID, global::System.String classDisplayName, global::System.String className, global::System.Boolean classUsesVersioning, global::System.Boolean classIsDocumentType, global::System.Boolean classIsCoupledClass, global::System.String classXmlSchema, global::System.String classFormDefinition, global::System.String classNodeNameSource, global::System.String classTableName, global::System.Boolean classShowAsSystemTable, global::System.DateTime classLastModified, global::System.Guid classGUID, global::System.Boolean classIsCustomTable, global::System.Int32 classLoadGeneration)
         {
             CMS_Class cMS_Class = new CMS_Class();
             cMS_Class.ClassID = classID;
@@ -2059,8 +2057,6 @@ namespace wp2k
             cMS_Class.ClassIsCoupledClass = classIsCoupledClass;
             cMS_Class.ClassXmlSchema = classXmlSchema;
             cMS_Class.ClassFormDefinition = classFormDefinition;
-            cMS_Class.ClassEditingPageUrl = classEditingPageUrl;
-            cMS_Class.ClassListPageUrl = classListPageUrl;
             cMS_Class.ClassNodeNameSource = classNodeNameSource;
             cMS_Class.ClassTableName = classTableName;
             cMS_Class.ClassShowAsSystemTable = classShowAsSystemTable;
@@ -2273,7 +2269,7 @@ namespace wp2k
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String ClassEditingPageUrl
         {
@@ -2285,7 +2281,7 @@ namespace wp2k
             {
                 OnClassEditingPageUrlChanging(value);
                 ReportPropertyChanging("ClassEditingPageUrl");
-                _ClassEditingPageUrl = StructuralObject.SetValidValue(value, false);
+                _ClassEditingPageUrl = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("ClassEditingPageUrl");
                 OnClassEditingPageUrlChanged();
             }
@@ -2297,7 +2293,7 @@ namespace wp2k
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String ClassListPageUrl
         {
@@ -2309,7 +2305,7 @@ namespace wp2k
             {
                 OnClassListPageUrlChanging(value);
                 ReportPropertyChanging("ClassListPageUrl");
-                _ClassListPageUrl = StructuralObject.SetValidValue(value, false);
+                _ClassListPageUrl = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("ClassListPageUrl");
                 OnClassListPageUrlChanged();
             }
@@ -6822,24 +6818,24 @@ namespace wp2k
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> NodeChildNodesCount
+        public Nullable<global::System.Boolean> NodeHasChildren
         {
             get
             {
-                return _NodeChildNodesCount;
+                return _NodeHasChildren;
             }
             set
             {
-                OnNodeChildNodesCountChanging(value);
-                ReportPropertyChanging("NodeChildNodesCount");
-                _NodeChildNodesCount = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("NodeChildNodesCount");
-                OnNodeChildNodesCountChanged();
+                OnNodeHasChildrenChanging(value);
+                ReportPropertyChanging("NodeHasChildren");
+                _NodeHasChildren = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("NodeHasChildren");
+                OnNodeHasChildrenChanged();
             }
         }
-        private Nullable<global::System.Int32> _NodeChildNodesCount;
-        partial void OnNodeChildNodesCountChanging(Nullable<global::System.Int32> value);
-        partial void OnNodeChildNodesCountChanged();
+        private Nullable<global::System.Boolean> _NodeHasChildren;
+        partial void OnNodeHasChildrenChanging(Nullable<global::System.Boolean> value);
+        partial void OnNodeHasChildrenChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -8907,30 +8903,6 @@ namespace wp2k
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> UserShowSplashScreen
-        {
-            get
-            {
-                return _UserShowSplashScreen;
-            }
-            set
-            {
-                OnUserShowSplashScreenChanging(value);
-                ReportPropertyChanging("UserShowSplashScreen");
-                _UserShowSplashScreen = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("UserShowSplashScreen");
-                OnUserShowSplashScreenChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _UserShowSplashScreen;
-        partial void OnUserShowSplashScreenChanging(Nullable<global::System.Boolean> value);
-        partial void OnUserShowSplashScreenChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public Nullable<global::System.Int32> UserActivityPoints
         {
             get
@@ -9531,54 +9503,6 @@ namespace wp2k
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> UserWebPartToolbarEnabled
-        {
-            get
-            {
-                return _UserWebPartToolbarEnabled;
-            }
-            set
-            {
-                OnUserWebPartToolbarEnabledChanging(value);
-                ReportPropertyChanging("UserWebPartToolbarEnabled");
-                _UserWebPartToolbarEnabled = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("UserWebPartToolbarEnabled");
-                OnUserWebPartToolbarEnabledChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _UserWebPartToolbarEnabled;
-        partial void OnUserWebPartToolbarEnabledChanging(Nullable<global::System.Boolean> value);
-        partial void OnUserWebPartToolbarEnabledChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String UserWebPartToolbarPosition
-        {
-            get
-            {
-                return _UserWebPartToolbarPosition;
-            }
-            set
-            {
-                OnUserWebPartToolbarPositionChanging(value);
-                ReportPropertyChanging("UserWebPartToolbarPosition");
-                _UserWebPartToolbarPosition = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("UserWebPartToolbarPosition");
-                OnUserWebPartToolbarPositionChanged();
-            }
-        }
-        private global::System.String _UserWebPartToolbarPosition;
-        partial void OnUserWebPartToolbarPositionChanging(global::System.String value);
-        partial void OnUserWebPartToolbarPositionChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public Nullable<global::System.Int32> UserInvalidLogOnAttempts
         {
             get
@@ -9954,30 +9878,6 @@ namespace wp2k
         private Nullable<global::System.Int32> _UserPreferredPaymentOptionID;
         partial void OnUserPreferredPaymentOptionIDChanging(Nullable<global::System.Int32> value);
         partial void OnUserPreferredPaymentOptionIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> UserDiscountLevelID
-        {
-            get
-            {
-                return _UserDiscountLevelID;
-            }
-            set
-            {
-                OnUserDiscountLevelIDChanging(value);
-                ReportPropertyChanging("UserDiscountLevelID");
-                _UserDiscountLevelID = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("UserDiscountLevelID");
-                OnUserDiscountLevelIDChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _UserDiscountLevelID;
-        partial void OnUserDiscountLevelIDChanging(Nullable<global::System.Int32> value);
-        partial void OnUserDiscountLevelIDChanged();
 
         #endregion
 
