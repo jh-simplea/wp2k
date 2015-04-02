@@ -84,7 +84,7 @@ namespace wp2k {
                               {
                                   CategoryCount = 0,
                                   CategoryDisplayName = c.Value,
-                                  CategoryName = c.Value,
+                                  CategoryName = ToFriendlyName(c.Value),
                                   CategoryDescription = c.Value,
                                   CategoryEnabled = true,
                                   CategoryGUID = Guid.NewGuid(),
@@ -744,5 +744,26 @@ namespace wp2k {
 
 			return stringBuilder.ToString();
 		}
+
+        private static string ToFriendlyName(string input)
+        {
+            if (String.IsNullOrWhiteSpace(input))
+                return String.Empty;
+
+            input = input.Replace("@", "at").Replace("&", "and").Replace("%", " percent");
+            input = Regex.Replace(input, @"[\s\/\\]+", "-");
+            input = Regex.Replace(input, @"[^a-zA-Z0-9\-_]+", "").ToLowerInvariant();
+
+            while (input.IndexOf("--", StringComparison.OrdinalIgnoreCase) > -1)
+            {
+                input = input.Replace("--", "-");
+            }
+            while (input.IndexOf("__", StringComparison.OrdinalIgnoreCase) > -1)
+            {
+                input = input.Replace("__", "_");
+            }
+
+            return input.Trim('-');
+        }
 	}
 }
